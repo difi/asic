@@ -16,7 +16,7 @@ class XadesAsicWriter extends AbstractAsicWriter {
 
     @Override
     void performSign(SignatureHelper signatureHelper) throws IOException {
-        // Generate and write manifest (META-INF/signatures.xml)
+        // Generate and createFilter manifest (META-INF/signatures.xml)
         byte[] manifestBytes = ((XadesAsicManifest) asicManifest).toBytes(signatureHelper);
         asicOutputStream.writeZipEntry("META-INF/signatures.xml", manifestBytes);
 

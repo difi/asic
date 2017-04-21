@@ -17,7 +17,7 @@ class CadesAsicWriter extends AbstractAsicWriter {
 
     /**
      * Prepares creation of a new container.
-     * @param outputStream Stream used to write container.
+     * @param outputStream Stream used to createFilter container.
      */
     public CadesAsicWriter(SignatureMethod signatureMethod, OutputStream outputStream, boolean closeStreamOnClose) throws IOException {
         super(outputStream, closeStreamOnClose, new CadesAsicManifest(signatureMethod.getMessageDigestAlgorithm()));

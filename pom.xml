@@ -71,12 +71,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.24</version>
+            <version>1.7.25</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.3</version>
             <scope>test</scope>
         </dependency>
 
@@ -106,25 +106,15 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.10</version>
+            <version>6.11</version>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
 
     <build>
-        <defaultGoal>clean install</defaultGoal>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>**/*.pdf</exclude>
-                </excludes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
-                <!-- Explicitly declares which version of Java to use -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
@@ -198,7 +188,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.5.201505241946</version>
+                <version>0.7.9</version>
                 <executions>
                     <execution>
                         <goals>
@@ -220,6 +210,7 @@
                 </configuration>
             </plugin>
         </plugins>
+
         <pluginManagement>
             <plugins>
                 <plugin>

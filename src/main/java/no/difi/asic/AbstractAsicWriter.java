@@ -28,7 +28,7 @@ abstract class AbstractAsicWriter implements AsicWriter {
 
     /**
      * Prepares creation of a new container.
-     * @param outputStream Stream used to write container.
+     * @param outputStream Stream used to createFilter container.
      */
     AbstractAsicWriter(OutputStream outputStream, boolean closeStreamOnClose, AbstractAsicManifest asicManifest) throws IOException {
         // Keep original output stream

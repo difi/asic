@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.io.UnclosableInputStream;
 import no.difi.commons.asic.jaxb.asic.AsicManifest;
 import no.difi.commons.asic.jaxb.asic.Certificate;
 import no.difi.commons.asic.jaxb.opendocument.manifest.Manifest;
@@ -115,7 +116,7 @@ abstract class AbstractAsicReader implements Closeable {
         contentIsWritten = true;
 
         messageDigest.reset();
-        return new InputStreamWrapper(new DigestInputStream(zipInputStream, messageDigest));
+        return new UnclosableInputStream(new DigestInputStream(zipInputStream, messageDigest));
     }
 
     @Override

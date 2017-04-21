@@ -7,6 +7,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
@@ -35,7 +36,7 @@ class OasisManifest {
     public OasisManifest(InputStream inputStream) {
         try {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            manifest = (Manifest) unmarshaller.unmarshal(inputStream);
+            manifest = unmarshaller.unmarshal(new StreamSource(inputStream), Manifest.class).getValue();
         } catch (JAXBException e) {
             throw new IllegalStateException("Unable to read XML as OASIS OpenDocument Manifest.", e);
         }

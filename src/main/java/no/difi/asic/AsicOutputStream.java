@@ -52,5 +52,4 @@ class AsicOutputStream extends ZipOutputStream {
             throw new IOException(String.format("Unable to create new ZIP entry for %s: %s", zipEntry.getName(), e.getMessage()), e);
         }
     }
-
 }

@@ -86,7 +86,7 @@ public class AsicUtils {
                     // Copy entries
                     oasisManifest.append(new OasisManifest(new ByteArrayInputStream(byteArrayOutputStream.toByteArray())));
 
-                    // Nothing to write to target container
+                    // Nothing to createFilter to target container
                     target.closeEntry();
                     continue;
                 } else {

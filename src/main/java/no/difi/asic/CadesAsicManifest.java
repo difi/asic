@@ -18,6 +18,7 @@ class CadesAsicManifest extends AbstractAsicManifest {
     public static final Logger logger = LoggerFactory.getLogger(AbstractAsicManifest.class);
 
     private static JAXBContext jaxbContext; // Thread safe
+
     private static ObjectFactory objectFactory = new ObjectFactory();
 
     static {
@@ -30,6 +31,7 @@ class CadesAsicManifest extends AbstractAsicManifest {
 
     // Automagically generated from XML Schema Definition files
     private ASiCManifestType ASiCManifestType = new ASiCManifestType();
+
     private boolean rootFilenameIsSet = false;
 
     public CadesAsicManifest(MessageDigestAlgorithm messageDigestAlgorithm) {
@@ -122,5 +124,4 @@ class CadesAsicManifest extends AbstractAsicManifest {
             throw new IllegalStateException("Unable to read content as XML", e);
         }
     }
-
 }

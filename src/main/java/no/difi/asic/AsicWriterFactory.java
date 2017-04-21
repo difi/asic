@@ -76,7 +76,7 @@ public class AsicWriterFactory {
     }
 
     /**
-     * Creates a new AsicWriter, which will write the container contents to the supplied output stream.
+     * Creates a new AsicWriter, which will createFilter the container contents to the supplied output stream.
      * @param outputStream stream into which the archive will be written.
      * @return an instance of AsicWriter
      * @throws IOException
