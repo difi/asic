@@ -6,6 +6,7 @@ import no.difi.asic.model.Container;
 
 import java.io.IOException;
 import java.security.KeyStore;
+import java.util.List;
 
 /**
  * @author erlend
@@ -14,7 +15,7 @@ public interface SignatureCreator {
 
     boolean supportsRootFile();
 
-    void create(Container container, KeyStore.PrivateKeyEntry privateKeyEntry, SignatureConfig signatureConfig)
+    void create(AsicWriterLayer asicWriterLayer, Container container, List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig)
             throws IOException, AsicExcepion;
 
 }

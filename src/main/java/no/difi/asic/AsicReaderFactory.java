@@ -1,5 +1,7 @@
 package no.difi.asic;
 
+import no.difi.asic.api.AsicReader;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

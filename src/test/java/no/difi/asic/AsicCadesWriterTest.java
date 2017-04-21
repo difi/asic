@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import no.difi.asic.api.AsicWriter;
 import no.difi.commons.asic.jaxb.cades.DataObjectReferenceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

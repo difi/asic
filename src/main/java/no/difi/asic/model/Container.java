@@ -21,6 +21,9 @@ public class Container {
         if (this.rootFile != null)
             throw new AsicExcepion("Root file is already set.");
 
+        if (!dataObjects.containsKey(rootFile))
+            throw new AsicExcepion(String.format("File '%s' is not known.", rootFile));
+
         this.rootFile = rootFile;
     }
 

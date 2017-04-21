@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import no.difi.asic.api.AsicReader;
 import no.difi.commons.asic.jaxb.asic.AsicManifest;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;

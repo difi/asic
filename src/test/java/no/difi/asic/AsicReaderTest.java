@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.api.AsicReader;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

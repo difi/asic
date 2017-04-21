@@ -1,5 +1,7 @@
 package no.difi.asic;
 
+import no.difi.asic.api.AsicWriter;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;

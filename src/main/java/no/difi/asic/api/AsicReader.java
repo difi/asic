@@ -1,4 +1,4 @@
-package no.difi.asic;
+package no.difi.asic.api;
 
 import no.difi.commons.asic.jaxb.asic.AsicManifest;
 

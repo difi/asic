@@ -1,5 +1,7 @@
 package no.difi.asic.model;
 
+import no.difi.asic.MimeType;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,12 @@ public class DataObject implements Serializable {
     public DataObject(String filename, String mimeType, byte[] hash) {
         this.filename = filename;
         this.mimeType = mimeType;
+        this.hash = hash;
+    }
+
+    public DataObject(String filename, MimeType mimeType, byte[] hash) {
+        this.filename = filename;
+        this.mimeType = mimeType.toString();
         this.hash = hash;
     }
 

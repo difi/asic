@@ -4,11 +4,14 @@ import no.difi.asic.util.KeyStoreUtil;
 import no.difi.asic.util.MimeTypes;
 import org.testng.annotations.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.KeyStore;
 
 /**
  * @author erlend
@@ -17,11 +20,21 @@ public class AsicWriter2Test {
 
     @Test
     public void simple() throws Exception {
-        AsicWriterFactory2 asicWriterFactory = AsicWriterFactory2.newFactory(Configuration.PAYMENT);
+        KeyStore.PrivateKeyEntry keyEntry;
+        try (InputStream inputStream = getClass().getResourceAsStream("/kontaktinfo-client-test.jks")) {
+            keyEntry = KeyStoreUtil.load(inputStream, "changeit", "client_alias", "changeit");
+        }
 
-        Path path = Paths.get("target/asicwriter2-test.asice");
-        try (OutputStream outputStream = Files.newOutputStream(path);
-             AsicWriter2 asicWriter = asicWriterFactory.newContainer(outputStream)) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        AsicWriterFactory2 asicWriterFactory = AsicWriterFactory2.newFactory(Configuration.LAGACY)
+                .signBy(keyEntry)
+                .build();
+
+        // Path path = Paths.get("target/asicwriter2-test.asice");
+        // try (OutputStream outputStream = Files.newOutputStream(path);
+        try (OutputStream outputStream = byteArrayOutputStream;
+             AsicWriter2 asicWriter = asicWriterFactory.newContainer(outputStream).build()) {
 
             try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
                 asicWriter.add(inputStream, "bii-envelope.xml", MimeTypes.XML);
@@ -33,9 +46,9 @@ public class AsicWriter2Test {
 
             asicWriter.setRootFile("bii-envelope.xml");
 
-            try (InputStream inputStream = getClass().getResourceAsStream("/kontaktinfo-client-test.jks")) {
-                asicWriter.sign(KeyStoreUtil.load(inputStream, "changeit", "client_alias", "changeit"));
-            }
+            asicWriter.sign();
         }
+
+        AsicVerifierFactory.newFactory().verify(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
     }
 }

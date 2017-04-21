@@ -1,4 +1,7 @@
-package no.difi.asic;
+package no.difi.asic.api;
+
+import no.difi.asic.MimeType;
+import no.difi.asic.SignatureHelper;
 
 import java.io.File;
 import java.io.IOException;

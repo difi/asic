@@ -2,6 +2,7 @@ package no.difi.asic;
 
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.api.AsicReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
