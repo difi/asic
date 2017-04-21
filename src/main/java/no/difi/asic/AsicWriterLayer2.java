@@ -4,6 +4,7 @@ import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.lang.AsicExcepion;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
+import no.difi.asic.model.MimeType;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

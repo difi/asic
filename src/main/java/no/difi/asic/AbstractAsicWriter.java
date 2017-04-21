@@ -2,6 +2,7 @@ package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicWriter;
+import no.difi.asic.model.MimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import java.nio.file.Path;
 import java.security.DigestOutputStream;
 import java.util.zip.ZipEntry;
 
+@Deprecated
 abstract class AbstractAsicWriter implements AsicWriter {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractAsicWriter.class);

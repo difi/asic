@@ -1,7 +1,7 @@
 package no.difi.asic.signature;
 
 import com.google.common.io.ByteStreams;
-import no.difi.asic.MimeType;
+import no.difi.asic.model.MimeType;
 import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.api.SignatureCreator;
 import no.difi.asic.config.SignatureConfig;

@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.model.MimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

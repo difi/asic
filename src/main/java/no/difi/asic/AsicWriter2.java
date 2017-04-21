@@ -5,6 +5,7 @@ import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.config.ConfigurationWrapper;
 import no.difi.asic.lang.AsicExcepion;
 import no.difi.asic.model.Container;
+import no.difi.asic.model.MimeType;
 import no.difi.asic.util.BCUtil;
 import no.difi.asic.util.MimeTypes;
 

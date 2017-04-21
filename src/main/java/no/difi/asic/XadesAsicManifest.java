@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import com.google.common.hash.Hashing;
+import no.difi.asic.model.MimeType;
 import no.difi.commons.asic.jaxb.cades.XAdESSignaturesType;
 import no.difi.commons.asic.jaxb.xades.*;
 import no.difi.commons.asic.jaxb.xades.ObjectFactory;
@@ -17,6 +18,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.util.GregorianCalendar;
 
+@Deprecated
 class XadesAsicManifest extends AbstractAsicManifest {
 
     private static JAXBContext jaxbContext; // Thread safe

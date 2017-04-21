@@ -1,6 +1,6 @@
 package no.difi.asic.api;
 
-import no.difi.asic.MimeType;
+import no.difi.asic.model.MimeType;
 import no.difi.asic.lang.AsicExcepion;
 
 import java.io.IOException;

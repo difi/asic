@@ -1,13 +1,12 @@
 package no.difi.asic;
 
+import no.difi.asic.lang.AsicExcepion;
 import no.difi.asic.util.KeyStoreUtil;
 import no.difi.asic.util.MimeTypes;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +18,7 @@ import java.security.KeyStore;
 public class AsicWriter2Test {
 
     @Test
-    public void simple() throws Exception {
+    public void simple() throws IOException, AsicExcepion {
         KeyStore.PrivateKeyEntry keyEntry;
         try (InputStream inputStream = getClass().getResourceAsStream("/kontaktinfo-client-test.jks")) {
             keyEntry = KeyStoreUtil.load(inputStream, "changeit", "client_alias", "changeit");
@@ -49,6 +48,9 @@ public class AsicWriter2Test {
             asicWriter.sign();
         }
 
-        AsicVerifierFactory.newFactory().verify(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        AsicVerifier asicVerifier = AsicVerifierFactory.newFactory()
+                .verify(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+
+        Assert.assertEquals(asicVerifier.getAsicManifest().getFile().size(), 2);
     }
 }

@@ -1,4 +1,4 @@
-package no.difi.asic;
+package no.difi.asic.model;
 
 public class MimeType {
 

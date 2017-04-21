@@ -12,6 +12,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * Stream handling requirements to ASiC files.
  */
+@Deprecated
 class AsicOutputStream extends ZipOutputStream {
 
     public static final Logger logger = LoggerFactory.getLogger(AsicOutputStream.class);

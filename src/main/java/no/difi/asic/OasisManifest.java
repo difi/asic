@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import no.difi.asic.model.MimeType;
 import no.difi.commons.asic.jaxb.opendocument.manifest.FileEntry;
 import no.difi.commons.asic.jaxb.opendocument.manifest.Manifest;
 

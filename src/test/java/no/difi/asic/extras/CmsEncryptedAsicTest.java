@@ -3,6 +3,7 @@ package no.difi.asic.extras;
 import no.difi.asic.*;
 import no.difi.asic.api.AsicReader;
 import no.difi.asic.api.AsicWriter;
+import no.difi.asic.model.MimeType;
 import org.bouncycastle.cms.CMSAlgorithm;
 import org.testng.Assert;
 import org.testng.annotations.Test;

@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import no.difi.asic.model.MimeType;
 import org.testng.annotations.Test;
 
 public class CadesAsicManifestTest {

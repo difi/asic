@@ -1,5 +1,7 @@
 package no.difi.asic;
 
+import no.difi.asic.model.MimeType;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 

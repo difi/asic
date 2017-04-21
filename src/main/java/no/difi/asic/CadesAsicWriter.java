@@ -15,6 +15,7 @@ import java.util.UUID;
  *         Date: 02.07.15
  *         Time: 12.09
  */
+@Deprecated
 class CadesAsicWriter extends AbstractAsicWriter {
 
     /**

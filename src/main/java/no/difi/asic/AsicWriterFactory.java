@@ -14,6 +14,7 @@ import java.nio.file.Path;
  * Creates AsicWriter instances according to the supplied parameters.
  *
  */
+@Deprecated
 public class AsicWriterFactory {
 
     private static Logger logger = LoggerFactory.getLogger(AsicWriterFactory.class);

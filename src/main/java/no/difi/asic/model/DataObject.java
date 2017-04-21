@@ -1,7 +1,5 @@
 package no.difi.asic.model;
 
-import no.difi.asic.MimeType;
-
 import java.io.Serializable;
 
 /**

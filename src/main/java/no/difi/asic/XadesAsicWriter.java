@@ -5,6 +5,7 @@ import no.difi.asic.api.AsicWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 
+@Deprecated
 class XadesAsicWriter extends AbstractAsicWriter {
 
     public XadesAsicWriter(SignatureMethod signatureMethod, OutputStream outputStream, boolean closeStreamOnClose) throws IOException {

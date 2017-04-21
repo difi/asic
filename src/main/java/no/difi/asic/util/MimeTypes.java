@@ -1,6 +1,6 @@
 package no.difi.asic.util;
 
-import no.difi.asic.MimeType;
+import no.difi.asic.model.MimeType;
 import no.difi.asic.lang.MimeTypeException;
 
 import java.io.IOException;

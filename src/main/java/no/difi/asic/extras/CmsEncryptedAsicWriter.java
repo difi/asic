@@ -3,7 +3,7 @@ package no.difi.asic.extras;
 import com.google.common.io.ByteStreams;
 import no.difi.asic.AsicUtils;
 import no.difi.asic.api.AsicWriter;
-import no.difi.asic.MimeType;
+import no.difi.asic.model.MimeType;
 import no.difi.asic.SignatureHelper;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.cms.CMSAlgorithm;

@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import no.difi.asic.model.MimeType;
 import no.difi.commons.asic.jaxb.cades.ASiCManifestType;
 import no.difi.commons.asic.jaxb.cades.DataObjectReferenceType;
 import no.difi.commons.asic.jaxb.cades.ObjectFactory;
