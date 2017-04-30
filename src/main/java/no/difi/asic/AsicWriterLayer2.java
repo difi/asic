@@ -31,10 +31,9 @@ class AsicWriterLayer2 implements AsicWriterLayer {
     }
 
     @Override
-    public OutputStream addContent(DataObject.Type type, String filename, MimeType mimeType)
+    public OutputStream addContent(DataObject.Type type, final String filename, MimeType mimeType)
             throws IOException, AsicException {
-        final DataObject dataObject = new DataObject(type, filename, mimeType);
-        container.add(dataObject);
+        container.update(filename, type, mimeType);
 
         asicOutputStream.nextEntry(filename);
 
@@ -46,7 +45,7 @@ class AsicWriterLayer2 implements AsicWriterLayer {
             public void close() throws IOException {
                 asicOutputStream.closeEntry();
 
-                dataObject.getHash().update(messageDigest);
+                container.update(filename, messageDigest);
             }
         };
     }

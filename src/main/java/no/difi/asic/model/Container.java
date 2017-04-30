@@ -2,6 +2,7 @@ package no.difi.asic.model;
 
 import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.lang.AsicException;
+import no.difi.asic.security.MultiMessageDigest;
 
 import java.io.Serializable;
 import java.util.*;
@@ -39,12 +40,34 @@ public class Container implements Serializable {
         this.rootFile = rootFile;
     }
 
-    public void add(DataObject dataObject) {
-        dataObjects.put(dataObject.getFilename(), dataObject);
+    public void update(String filename, DataObject.Type type, MimeType mimeType) {
+        DataObject dataObject = dataObjects.get(filename);
+
+        if (dataObject == null) {
+            dataObject = new DataObject(filename);
+            dataObjects.put(filename, dataObject);
+        }
+
+        dataObject.setType(type);
+        dataObject.setMimeType(mimeType);
+    }
+
+    public void update(String filename, MultiMessageDigest messageDigest) {
+        DataObject dataObject = dataObjects.get(filename);
+
+        if (dataObject == null) {
+            dataObject = new DataObject(filename);
+            dataObjects.put(filename, dataObject);
+        }
+
+        dataObject.getHash().update(messageDigest);
     }
 
     public void verify(Signer signer, String filename, MessageDigestAlgorithm algorithm, byte[] digest)
             throws AsicException {
+        if (mode != Mode.READER)
+            throw new IllegalStateException("Verification of content is performed when reading a container.");
+
         if (!dataObjects.get(filename).verify(signer, algorithm, digest))
             throw new AsicException(String.format("Unable to verify digest for file '%s'.", filename));
 
@@ -58,6 +81,6 @@ public class Container implements Serializable {
 
     public enum Mode {
         READER,
-        WRITER;
+        WRITER
     }
 }

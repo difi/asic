@@ -24,14 +24,16 @@ public class DataObject implements Serializable {
 
     private List<Signer> signers = new ArrayList<>();
 
-    public DataObject(Type type, String filename, MimeType mimeType) {
-        this.type = type;
+    public DataObject(String filename) {
         this.filename = filename;
-        this.mimeType = mimeType;
     }
 
     public Type getType() {
         return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public String getFilename() {
@@ -40,6 +42,10 @@ public class DataObject implements Serializable {
 
     public MimeType getMimeType() {
         return mimeType;
+    }
+
+    public void setMimeType(MimeType mimeType) {
+        this.mimeType = mimeType;
     }
 
     public Hash getHash() {
@@ -64,6 +70,6 @@ public class DataObject implements Serializable {
     }
 
     public enum Type {
-        DATA, METADATA
+        DATA, METADATA, MANIFEST, DETACHED_SIGNATURE
     }
 }

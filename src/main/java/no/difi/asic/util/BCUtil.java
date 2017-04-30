@@ -6,11 +6,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.security.Provider;
 import java.security.Security;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,16 +16,14 @@ import java.util.Map;
  */
 public class BCUtil {
 
-    static {
-        register();
-    }
+    public static final Provider PROVIDER = new BouncyCastleProvider();
 
     /**
-     * Register Bouncy Castle as Security Provider if it is not registered.
+     * Register Bouncy Castle as Security Provider if not registered.
      */
-    public static void register() {
+    static {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null)
-            Security.addProvider(new BouncyCastleProvider());
+            Security.addProvider(PROVIDER);
     }
 
     public static MessageDigest createMessageDigest(MessageDigestAlgorithm algorithm) throws AsicException {
@@ -36,8 +32,8 @@ public class BCUtil {
 
     public static MessageDigest createMessageDigest(String algorithm) throws AsicException {
         try {
-            return MessageDigest.getInstance(algorithm, BouncyCastleProvider.PROVIDER_NAME);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            return MessageDigest.getInstance(algorithm, PROVIDER);
+        } catch (NoSuchAlgorithmException e) {
             throw new AsicException(e.getMessage(), e);
         }
     }

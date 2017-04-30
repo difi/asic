@@ -62,7 +62,7 @@ public class AsicManifestReferenceTest {
 
         // The ASiCManifestType is not annotated
         ObjectFactory objectFactory = new ObjectFactory();
-        // JAXBElement<ASiCManifestType> m = objectFactory.createASiCManifest(asicManifest);
+        // JAXBElement<ASiCManifestType> m = OBJECT_FACTORY.createASiCManifest(asicManifest);
 
 
         // marshaller.marshal(m, System.out);

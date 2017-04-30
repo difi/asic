@@ -13,16 +13,12 @@ public class SignatureConfig {
 
     private Signature source;
 
-    private ValueWrapper<MessageDigestAlgorithm> signatureAlgorithm;
-
     private SignatureCreator signatureCreator;
 
     private SignatureVerifier signatureVerifier;
 
     SignatureConfig(Signature signature) throws AsicException {
         source = signature;
-
-        this.signatureAlgorithm = new ValueWrapper<>(signature.signatureAlgorithm());
 
         try {
             signatureCreator = signature.signatureCreator().newInstance();
@@ -36,8 +32,8 @@ public class SignatureConfig {
         return source.dataObjectAlgorithm();
     }
 
-    public ValueWrapper<MessageDigestAlgorithm> getSignatureAlgorithm() {
-        return signatureAlgorithm;
+    public MessageDigestAlgorithm getSignatureAlgorithm() {
+        return source.signatureAlgorithm();
     }
 
     public SignatureCreator getSignatureCreator() {

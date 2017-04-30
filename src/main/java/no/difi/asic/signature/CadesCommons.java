@@ -6,24 +6,24 @@ import no.difi.commons.asic.jaxb.cades.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import java.security.Provider;
 
 /**
  * @author erlend
  */
-class CadesCommons {
+abstract class CadesCommons {
+
+    protected static final Provider PROVIDER = BCUtil.PROVIDER;
 
     protected static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
     protected static final JAXBContext JAXB_CONTEXT;
 
     static {
-        BCUtil.register();
-
         try {
             JAXB_CONTEXT = JAXBContext.newInstance(ASiCManifestType.class);
         } catch (JAXBException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
-
 }

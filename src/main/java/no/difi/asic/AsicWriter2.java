@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.annotation.Processor;
 import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.config.ConfigurationWrapper;
 import no.difi.asic.lang.AsicException;
@@ -47,6 +48,8 @@ public class AsicWriter2 implements Closeable {
         MultiMessageDigest messageDigest =
                 new MultiMessageDigest(configuration.getSignature().getDataObjectAlgorithm());
         this.asicWriterLayer = new AsicWriterLayer2(outputStream, messageDigest, container);
+
+        configuration.process(Processor.State.INITIAL, asicWriterLayer, container);
     }
 
     public void setRootFile(String filename) throws AsicException {
@@ -84,10 +87,14 @@ public class AsicWriter2 implements Closeable {
     }
 
     public void sign() throws IOException, AsicException {
+        configuration.process(Processor.State.BEFORE_SIGNATURE, asicWriterLayer, container);
+
         configuration.getSignature().getSignatureCreator()
                 .create(asicWriterLayer, container, keyEntries, configuration.getSignature());
 
         signed = true;
+
+        configuration.process(Processor.State.AFTER_SIGNATURE, asicWriterLayer, container);
     }
 
     @Override

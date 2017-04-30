@@ -115,7 +115,8 @@ class CadesAsicManifest extends AbstractAsicManifest {
 
             // Run through recorded objects
             for (DataObjectReferenceType reference : manifest.getDataObjectReference()) {
-                manifestVerifier.update(reference.getURI(), reference.getMimeType(), reference.getDigestValue(), reference.getDigestMethod().getAlgorithm(), sigReference);
+                manifestVerifier.update(reference.getURI(), reference.getMimeType(), reference.getDigestValue(),
+                        reference.getDigestMethod().getAlgorithm(), sigReference);
                 if (reference.isRootfile() == Boolean.TRUE)
                     manifestVerifier.setRootFilename(reference.getURI());
             }

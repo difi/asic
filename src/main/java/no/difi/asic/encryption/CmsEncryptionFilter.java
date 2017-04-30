@@ -1,13 +1,12 @@
 package no.difi.asic.encryption;
 
 import no.difi.asic.api.EncryptionFilter;
-import no.difi.asic.config.ValueWrapper;
+import no.difi.asic.code.EncryptionAlgorithm;
 import no.difi.asic.lang.AsicException;
 import org.bouncycastle.cms.CMSEnvelopedDataStreamGenerator;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OutputEncryptor;
 
 import java.io.IOException;
@@ -22,7 +21,8 @@ import java.util.List;
 public class CmsEncryptionFilter extends CmsCommons implements EncryptionFilter {
 
     @Override
-    public OutputStream createFilter(OutputStream outputStream, ValueWrapper algorithm, List<X509Certificate> certificates)
+    public OutputStream createFilter(OutputStream outputStream, EncryptionAlgorithm algorithm,
+                                     List<X509Certificate> certificates)
             throws IOException, AsicException {
         try {
             // Create envelope data
@@ -32,7 +32,7 @@ public class CmsEncryptionFilter extends CmsCommons implements EncryptionFilter 
 
             // Create encryptor
             OutputEncryptor outputEncryptor = new JceCMSContentEncryptorBuilder(algorithm.getOid())
-                    .setProvider(BouncyCastleProvider.PROVIDER_NAME)
+                    .setProvider(PROVIDER)
                     .build();
 
             // Return OutputStream for use

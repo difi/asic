@@ -16,7 +16,6 @@ import no.difi.commons.asic.jaxb.xmldsig.DigestMethodType;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.*;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -43,7 +42,7 @@ import java.util.UUID;
 public class CadesSignatureCreator extends CadesCommons implements SignatureCreator {
 
     private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder =
-            new JcaDigestCalculatorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME);
+            new JcaDigestCalculatorProviderBuilder().setProvider(PROVIDER);
 
     private static final String MANIFEST_FILENAME = "META-INF/ASiCManifest-%s.xml";
 
@@ -57,34 +56,36 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
     }
 
     @Override
-    public void create(AsicWriterLayer asicWriterLayer, Container container, List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig)
+    public void create(AsicWriterLayer asicWriterLayer, Container container,
+                       List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig)
             throws IOException, AsicException {
         try {
             for (KeyStore.PrivateKeyEntry keyEntry : keyEntries) {
                 // Unique identifier
                 String identifier = UUID.randomUUID().toString();
 
-                JcaContentSignerBuilder jcaContentSignerBuilder =
-                        new JcaContentSignerBuilder(String.format("SHA1with%s", keyEntry.getPrivateKey().getAlgorithm()))
-                                .setProvider(BouncyCastleProvider.PROVIDER_NAME);
+                JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(
+                        String.format("%swith%s", signatureConfig.getSignatureAlgorithm().getString(),
+                                keyEntry.getPrivateKey().getAlgorithm())).setProvider(PROVIDER);
 
                 DigestCalculatorProvider digestCalculatorProvider = jcaDigestCalculatorProviderBuilder.build();
                 ContentSigner contentSigner = jcaContentSignerBuilder.build(keyEntry.getPrivateKey());
                 SignerInfoGenerator signerInfoGenerator = new JcaSignerInfoGeneratorBuilder(digestCalculatorProvider)
                         .build(contentSigner, (X509Certificate) keyEntry.getCertificate());
 
-                CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
-                cmsSignedDataGenerator.addSignerInfoGenerator(signerInfoGenerator);
-                cmsSignedDataGenerator.addCertificates(new JcaCertStore(Collections.singletonList(keyEntry.getCertificate())));
+                CMSSignedDataGenerator dataGenerator = new CMSSignedDataGenerator();
+                dataGenerator.addSignerInfoGenerator(signerInfoGenerator);
+                dataGenerator.addCertificates(new JcaCertStore(
+                        Collections.singletonList(keyEntry.getCertificate())));
 
                 // Create manifest
                 byte[] content = createManifest(asicWriterLayer, container, identifier, signatureConfig);
 
                 // Create signed data
-                CMSSignedData cmsSignedData = cmsSignedDataGenerator.generate(new CMSProcessableByteArray(content), false);
+                CMSSignedData signedData = dataGenerator.generate(new CMSProcessableByteArray(content), false);
 
                 // Write signature
-                writeSignature(asicWriterLayer, identifier, cmsSignedData);
+                writeSignature(asicWriterLayer, identifier, signedData);
             }
         } catch (OperatorCreationException | CertificateEncodingException | CMSException e) {
             throw new AsicException("Error while generating signature.", e);
@@ -128,7 +129,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
 
         // Write element to baos
         try (OutputStream outputStream =
-                     asicWriterLayer.addContent(DataObject.Type.METADATA,
+                     asicWriterLayer.addContent(DataObject.Type.MANIFEST,
                              String.format(MANIFEST_FILENAME, identifier), MimeTypes.XML)) {
             Marshaller marshaller = JAXB_CONTEXT.createMarshaller();
             marshaller.marshal(jaxbElement, byteArrayOutputStream);
@@ -144,7 +145,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
 
     private void writeSignature(AsicWriterLayer asicWriterLayer, String identifier, CMSSignedData cmsSignedData)
             throws IOException, AsicException {
-        try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.METADATA,
+        try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.DETACHED_SIGNATURE,
                 String.format(SIGNATURE_FILENAME, identifier), MimeType.forString(SIGNATURE_MIME_TYPE))) {
             ByteStreams.copy(new ByteArrayInputStream(cmsSignedData.getEncoded()), outputStream);
         }

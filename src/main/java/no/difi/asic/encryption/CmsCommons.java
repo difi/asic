@@ -2,12 +2,13 @@ package no.difi.asic.encryption;
 
 import no.difi.asic.util.BCUtil;
 
+import java.security.Provider;
+
 /**
  * @author erlend
  */
-class CmsCommons {
+abstract class CmsCommons {
 
-    static {
-        BCUtil.register();
-    }
+    protected static final Provider PROVIDER = BCUtil.PROVIDER;
+
 }
