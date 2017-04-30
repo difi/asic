@@ -1,7 +1,7 @@
 package no.difi.asic;
 
 import no.difi.asic.api.AsicWriterBuilder;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -74,13 +74,13 @@ class AsicWriterBuilder2 implements AsicWriterBuilder<AsicWriter2> {
      * {@inheritDoc}
      */
     @Override
-    public AsicWriter2 build() throws IOException, AsicExcepion {
+    public AsicWriter2 build() throws IOException, AsicException {
         AsicWriter2 asicWriter = new AsicWriter2(outputStream, closeStreamOnClose, asicWriterFactory2.configuration);
         asicWriter.certificates = certificates.isEmpty() ? asicWriterFactory2.certificates : certificates;
         asicWriter.keyEntries = keyEntries.isEmpty() ? asicWriterFactory2.keyEntries : keyEntries;
 
         if (asicWriter.keyEntries.isEmpty())
-            throw new AsicExcepion("No certificates found for signing.");
+            throw new AsicException("No certificates found for signing.");
 
         return asicWriter;
     }

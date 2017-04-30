@@ -1,13 +1,13 @@
 package no.difi.asic.signature;
 
 import com.google.common.io.ByteStreams;
-import no.difi.asic.model.MimeType;
 import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.api.SignatureCreator;
 import no.difi.asic.config.SignatureConfig;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
+import no.difi.asic.model.MimeType;
 import no.difi.asic.util.MimeTypes;
 import no.difi.commons.asic.jaxb.cades.ASiCManifestType;
 import no.difi.commons.asic.jaxb.cades.DataObjectReferenceType;
@@ -58,7 +58,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
 
     @Override
     public void create(AsicWriterLayer asicWriterLayer, Container container, List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig)
-            throws IOException, AsicExcepion {
+            throws IOException, AsicException {
         try {
             for (KeyStore.PrivateKeyEntry keyEntry : keyEntries) {
                 // Unique identifier
@@ -87,13 +87,13 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
                 writeSignature(asicWriterLayer, identifier, cmsSignedData);
             }
         } catch (OperatorCreationException | CertificateEncodingException | CMSException e) {
-            throw new AsicExcepion("Error while generating signature.", e);
+            throw new AsicException("Error while generating signature.", e);
         }
     }
 
     private byte[] createManifest(AsicWriterLayer asicWriterLayer, Container container, String identifier,
                                   SignatureConfig signatureConfig)
-            throws IOException, AsicExcepion {
+            throws IOException, AsicException {
         // Reference to signature file.
         SigReferenceType sigReferenceType = OBJECT_FACTORY.createSigReferenceType();
         sigReferenceType.setURI(String.format(SIGNATURE_FILENAME, identifier));
@@ -104,14 +104,15 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
         aSiCManifestType.setSigReference(sigReferenceType);
 
         DigestMethodType digestMethodType = new DigestMethodType();
-        digestMethodType.setAlgorithm(signatureConfig.getDataObjectAlgorithm().getURI());
+        digestMethodType.setAlgorithm(signatureConfig.getDataObjectAlgorithm()[0].getURI());
 
         // Add DataObjects
         for (DataObject dataObject : container.getDataObjects()) {
             DataObjectReferenceType dataObjectReferenceType = OBJECT_FACTORY.createDataObjectReferenceType();
             dataObjectReferenceType.setURI(dataObject.getFilename());
-            dataObjectReferenceType.setMimeType(dataObject.getMimeType());
-            dataObjectReferenceType.setDigestValue(dataObject.getHash());
+            dataObjectReferenceType.setMimeType(dataObject.getMimeType().getValue());
+            dataObjectReferenceType.setDigestValue(dataObject.getHash()
+                    .get(signatureConfig.getDataObjectAlgorithm()[0]));
             dataObjectReferenceType.setDigestMethod(digestMethodType);
 
             if (dataObject.getFilename().equals(container.getRootFile()))
@@ -127,22 +128,24 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
 
         // Write element to baos
         try (OutputStream outputStream =
-                     asicWriterLayer.addContent(String.format(MANIFEST_FILENAME, identifier), MimeTypes.XML)) {
+                     asicWriterLayer.addContent(DataObject.Type.METADATA,
+                             String.format(MANIFEST_FILENAME, identifier), MimeTypes.XML)) {
             Marshaller marshaller = JAXB_CONTEXT.createMarshaller();
             marshaller.marshal(jaxbElement, byteArrayOutputStream);
 
             // Write content to asic
             ByteStreams.copy(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), outputStream);
         } catch (JAXBException e) {
-            throw new AsicExcepion(e.getMessage(), e);
+            throw new AsicException(e.getMessage(), e);
         }
 
         return byteArrayOutputStream.toByteArray();
     }
 
     private void writeSignature(AsicWriterLayer asicWriterLayer, String identifier, CMSSignedData cmsSignedData)
-            throws IOException, AsicExcepion {
-        try (OutputStream outputStream = asicWriterLayer.addContent(String.format(SIGNATURE_FILENAME, identifier), MimeType.forString(SIGNATURE_MIME_TYPE))) {
+            throws IOException, AsicException {
+        try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.METADATA,
+                String.format(SIGNATURE_FILENAME, identifier), MimeType.forString(SIGNATURE_MIME_TYPE))) {
             ByteStreams.copy(new ByteArrayInputStream(cmsSignedData.getEncoded()), outputStream);
         }
     }

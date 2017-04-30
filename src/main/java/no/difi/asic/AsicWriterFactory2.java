@@ -2,7 +2,7 @@ package no.difi.asic;
 
 import no.difi.asic.api.AsicWriterBuilder;
 import no.difi.asic.config.ConfigurationWrapper;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,15 +24,15 @@ public class AsicWriterFactory2 {
 
     protected List<KeyStore.PrivateKeyEntry> keyEntries;
 
-    public static AsicWriterBuilder<AsicWriterFactory2> newFactory() throws AsicExcepion {
+    public static AsicWriterBuilder<AsicWriterFactory2> newFactory() throws AsicException {
         return newFactory(Configuration.LAGACY);
     }
 
-    public static AsicWriterBuilder<AsicWriterFactory2> newFactory(Enum configuration) throws AsicExcepion {
+    public static AsicWriterBuilder<AsicWriterFactory2> newFactory(Enum configuration) throws AsicException {
         return new AsicWriterFactoryBuilder2(configuration);
     }
 
-    protected AsicWriterFactory2(AsicWriterFactoryBuilder2 builder, Enum configuration) throws AsicExcepion {
+    protected AsicWriterFactory2(AsicWriterFactoryBuilder2 builder, Enum configuration) throws AsicException {
         this.configuration = new ConfigurationWrapper(configuration);
         this.certificates = builder.certificates;
         this.keyEntries = builder.keyEntries;
@@ -46,7 +46,7 @@ public class AsicWriterFactory2 {
      * @param filename  the name of the archive.
      * @return an instance of AsicWriter
      */
-    public AsicWriterBuilder<AsicWriter2> newContainer(File outputDir, String filename) throws IOException, AsicExcepion {
+    public AsicWriterBuilder<AsicWriter2> newContainer(File outputDir, String filename) throws IOException, AsicException {
         return newContainer(new File(outputDir, filename));
     }
 
@@ -56,14 +56,14 @@ public class AsicWriterFactory2 {
      * @param file the file reference to the archive.
      * @return an instance of AsicWriter
      */
-    public AsicWriterBuilder<AsicWriter2> newContainer(File file) throws IOException, AsicExcepion {
+    public AsicWriterBuilder<AsicWriter2> newContainer(File file) throws IOException, AsicException {
         return newContainer(file.toPath());
     }
 
     /**
      * @see #newContainer(File)
      */
-    public AsicWriterBuilder<AsicWriter2> newContainer(Path path) throws IOException, AsicExcepion {
+    public AsicWriterBuilder<AsicWriter2> newContainer(Path path) throws IOException, AsicException {
         return newContainer(Files.newOutputStream(path), true);
     }
 
@@ -73,12 +73,12 @@ public class AsicWriterFactory2 {
      * @param outputStream stream into which the archive will be written.
      * @return an instance of AsicWriter
      */
-    public AsicWriterBuilder<AsicWriter2> newContainer(OutputStream outputStream) throws IOException, AsicExcepion {
+    public AsicWriterBuilder<AsicWriter2> newContainer(OutputStream outputStream) throws IOException, AsicException {
         return newContainer(outputStream, false);
     }
 
     private AsicWriterBuilder<AsicWriter2> newContainer(OutputStream outputStream, boolean closeStreamOnClose)
-            throws IOException, AsicExcepion {
+            throws IOException, AsicException {
         AsicWriterBuilder2 asicWriterBuilder = new AsicWriterBuilder2();
         asicWriterBuilder.asicWriterFactory2 = this;
         asicWriterBuilder.outputStream = outputStream;

@@ -2,7 +2,7 @@ package no.difi.asic.encryption;
 
 import no.difi.asic.api.EncryptionFilter;
 import no.difi.asic.config.ValueWrapper;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 import org.bouncycastle.cms.CMSEnvelopedDataStreamGenerator;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
@@ -23,7 +23,7 @@ public class CmsEncryptionFilter extends CmsCommons implements EncryptionFilter 
 
     @Override
     public OutputStream createFilter(OutputStream outputStream, ValueWrapper algorithm, List<X509Certificate> certificates)
-            throws IOException, AsicExcepion {
+            throws IOException, AsicException {
         try {
             // Create envelope data
             CMSEnvelopedDataStreamGenerator streamGenerator = new CMSEnvelopedDataStreamGenerator();
@@ -38,7 +38,7 @@ public class CmsEncryptionFilter extends CmsCommons implements EncryptionFilter 
             // Return OutputStream for use
             return streamGenerator.open(outputStream, outputEncryptor);
         } catch (CertificateEncodingException | CMSException e) {
-            throw new AsicExcepion(e.getMessage(), e);
+            throw new AsicException(e.getMessage(), e);
         }
     }
 }

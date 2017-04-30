@@ -1,7 +1,7 @@
 package no.difi.asic;
 
 import no.difi.asic.api.AsicWriterBuilder;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
@@ -61,7 +61,7 @@ class AsicWriterFactoryBuilder2 implements AsicWriterBuilder<AsicWriterFactory2>
      * {@inheritDoc}
      */
     @Override
-    public AsicWriterFactory2 build() throws AsicExcepion {
+    public AsicWriterFactory2 build() throws AsicException {
         AsicWriterFactory2 asicWriterFactory = new AsicWriterFactory2(this, configuration);
         asicWriterFactory.certificates = certificates;
         asicWriterFactory.keyEntries = keyEntries;

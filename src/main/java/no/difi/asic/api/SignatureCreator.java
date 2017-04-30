@@ -1,7 +1,7 @@
 package no.difi.asic.api;
 
 import no.difi.asic.config.SignatureConfig;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 
 import java.io.IOException;
@@ -16,6 +16,6 @@ public interface SignatureCreator {
     boolean supportsRootFile();
 
     void create(AsicWriterLayer asicWriterLayer, Container container, List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig)
-            throws IOException, AsicExcepion;
+            throws IOException, AsicException;
 
 }

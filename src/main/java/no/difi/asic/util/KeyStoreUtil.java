@@ -1,6 +1,6 @@
 package no.difi.asic.util;
 
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -14,7 +14,7 @@ import java.security.cert.X509Certificate;
 public class KeyStoreUtil {
 
     public static KeyStore.PrivateKeyEntry load(InputStream keyStoreStream, String keyStorePassword,
-                                                String keyAlias, String keyPassword) throws AsicExcepion {
+                                                String keyAlias, String keyPassword) throws AsicException {
         try {
             KeyStore keyStore = KeyStore.getInstance("JKS");
             keyStore.load(keyStoreStream, keyStorePassword.toCharArray());
@@ -24,7 +24,7 @@ public class KeyStoreUtil {
 
             return new KeyStore.PrivateKeyEntry(key, new Certificate[]{certificate});
         } catch (Exception e) {
-            throw new AsicExcepion(String.format("Error '%s' while loading private key.", e.getMessage()), e);
+            throw new AsicException(String.format("Error '%s' while loading private key.", e.getMessage()), e);
         }
     }
 }

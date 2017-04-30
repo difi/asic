@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Signature {
 
-    MessageDigestAlgorithm dataObjectAlgorithm();
+    MessageDigestAlgorithm[] dataObjectAlgorithm();
 
     MessageDigestAlgorithm signatureAlgorithm();
 

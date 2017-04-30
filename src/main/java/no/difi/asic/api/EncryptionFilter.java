@@ -1,7 +1,7 @@
 package no.difi.asic.api;
 
 import no.difi.asic.config.ValueWrapper;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,6 +14,6 @@ import java.util.List;
 public interface EncryptionFilter {
 
     OutputStream createFilter(OutputStream outputStream, ValueWrapper algorithm, List<X509Certificate> certificates)
-            throws IOException, AsicExcepion;
+            throws IOException, AsicException;
 
 }

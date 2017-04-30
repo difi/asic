@@ -11,11 +11,14 @@ import java.lang.reflect.Field;
 /**
  * @author erlend
  */
-public class ValueWrapper {
+public class ValueWrapper<T> {
+
+    private T source;
 
     private Field field;
 
-    public ValueWrapper(Enum value) {
+    public ValueWrapper(T value) {
+        this.source = value;
         this.field = EnumUtil.getField(value);
     }
 
@@ -25,6 +28,10 @@ public class ValueWrapper {
 
     public String getString() {
         return field.getAnnotation(StringValue.class).value();
+    }
+
+    public T getSource() {
+        return source;
     }
 
     public String getURI() {

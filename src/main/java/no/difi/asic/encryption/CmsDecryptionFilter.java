@@ -1,7 +1,7 @@
 package no.difi.asic.encryption;
 
 import no.difi.asic.api.DecryptionFilter;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ public class CmsDecryptionFilter extends CmsCommons implements DecryptionFilter 
 
     @Override
     public InputStream createFilter(InputStream inputStream, Enum<?> algorithm, PrivateKey privateKey)
-            throws IOException, AsicExcepion {
+            throws IOException, AsicException {
         return null;
     }
 }

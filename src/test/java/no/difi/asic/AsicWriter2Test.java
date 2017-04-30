@@ -1,15 +1,12 @@
 package no.difi.asic;
 
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 import no.difi.asic.util.KeyStoreUtil;
 import no.difi.asic.util.MimeTypes;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.KeyStore;
 
 /**
@@ -18,7 +15,7 @@ import java.security.KeyStore;
 public class AsicWriter2Test {
 
     @Test
-    public void simple() throws IOException, AsicExcepion {
+    public void simple() throws IOException, AsicException {
         KeyStore.PrivateKeyEntry keyEntry;
         try (InputStream inputStream = getClass().getResourceAsStream("/kontaktinfo-client-test.jks")) {
             keyEntry = KeyStoreUtil.load(inputStream, "changeit", "client_alias", "changeit");

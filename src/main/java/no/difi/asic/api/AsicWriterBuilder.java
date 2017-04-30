@@ -1,6 +1,6 @@
 package no.difi.asic.api;
 
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 
 import java.io.IOException;
 import java.security.KeyStore;
@@ -31,8 +31,8 @@ public interface AsicWriterBuilder<T> {
      * Returns the wanted instances.
      *
      * @return Actual instance.
-     * @throws AsicExcepion Thrown in case of invalid states.
+     * @throws AsicException Thrown in case of invalid states.
      */
-    T build() throws IOException, AsicExcepion;
+    T build() throws IOException, AsicException;
 
 }

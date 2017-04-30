@@ -1,6 +1,10 @@
 package no.difi.asic.model;
 
-public class MimeType {
+import java.io.Serializable;
+
+public class MimeType implements Serializable {
+
+    private static final long serialVersionUID = 5501916549809487201L;
 
     public static final MimeType XML = MimeType.forString("application/xml");
 
@@ -8,14 +12,33 @@ public class MimeType {
         return new MimeType(mimeType);
     }
 
-    private String mimeType;
+    private final String value;
 
     private MimeType(String mimeType) {
-        this.mimeType = mimeType;
+        this.value = mimeType;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MimeType mimeType = (MimeType) o;
+
+        return value.equals(mimeType.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
     }
 
     @Override
     public String toString() {
-        return mimeType;
+        return value;
     }
 }

@@ -2,7 +2,7 @@ package no.difi.asic.config;
 
 import no.difi.asic.annotation.Encryption;
 import no.difi.asic.annotation.Signature;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.lang.AsicException;
 import no.difi.asic.util.EnumUtil;
 
 import java.lang.reflect.Field;
@@ -16,7 +16,7 @@ public class ConfigurationWrapper {
 
     private SignatureConfig signatureConfig;
 
-    public ConfigurationWrapper(Enum configuration) throws AsicExcepion {
+    public ConfigurationWrapper(Enum configuration) throws AsicException {
         Field field = EnumUtil.getField(configuration);
 
         signatureConfig = new SignatureConfig(field.getAnnotation(Signature.class));

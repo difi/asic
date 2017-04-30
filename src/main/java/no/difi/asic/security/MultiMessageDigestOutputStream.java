@@ -1,5 +1,8 @@
 package no.difi.asic.security;
 
+import no.difi.asic.code.MessageDigestAlgorithm;
+import no.difi.asic.lang.AsicException;
+
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,6 +17,11 @@ public class MultiMessageDigestOutputStream extends FilterOutputStream {
     public MultiMessageDigestOutputStream(OutputStream out, MultiMessageDigest multiMessageDigest) {
         super(out);
         this.multiMessageDigest = multiMessageDigest;
+    }
+
+    public MultiMessageDigestOutputStream(OutputStream out, MessageDigestAlgorithm... messageDigestAlgorithms)
+            throws AsicException {
+        this(out, new MultiMessageDigest(messageDigestAlgorithms));
     }
 
     @Override

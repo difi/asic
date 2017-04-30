@@ -3,38 +3,40 @@ package no.difi.asic.config;
 import no.difi.asic.annotation.Signature;
 import no.difi.asic.api.SignatureCreator;
 import no.difi.asic.api.SignatureVerifier;
-import no.difi.asic.lang.AsicExcepion;
+import no.difi.asic.code.MessageDigestAlgorithm;
+import no.difi.asic.lang.AsicException;
 
 /**
  * @author erlend
  */
 public class SignatureConfig {
 
-    private ValueWrapper dataObjectAlgorithm;
+    private Signature source;
 
-    private ValueWrapper signatureAlgorithm;
+    private ValueWrapper<MessageDigestAlgorithm> signatureAlgorithm;
 
     private SignatureCreator signatureCreator;
 
     private SignatureVerifier signatureVerifier;
 
-    SignatureConfig(Signature signature) throws AsicExcepion {
-        this.dataObjectAlgorithm = new ValueWrapper(signature.dataObjectAlgorithm());
-        this.signatureAlgorithm = new ValueWrapper(signature.signatureAlgorithm());
+    SignatureConfig(Signature signature) throws AsicException {
+        source = signature;
+
+        this.signatureAlgorithm = new ValueWrapper<>(signature.signatureAlgorithm());
 
         try {
             signatureCreator = signature.signatureCreator().newInstance();
             signatureVerifier = signature.signatureVerifier().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new AsicExcepion("Unable to initiate signature implementation.", e);
+            throw new AsicException("Unable to initiate signature implementation.", e);
         }
     }
 
-    public ValueWrapper getDataObjectAlgorithm() {
-        return dataObjectAlgorithm;
+    public MessageDigestAlgorithm[] getDataObjectAlgorithm() {
+        return source.dataObjectAlgorithm();
     }
 
-    public ValueWrapper getSignatureAlgorithm() {
+    public ValueWrapper<MessageDigestAlgorithm> getSignatureAlgorithm() {
         return signatureAlgorithm;
     }
 
@@ -44,5 +46,9 @@ public class SignatureConfig {
 
     public SignatureVerifier getSignatureVerifier() {
         return signatureVerifier;
+    }
+
+    public Signature getSource() {
+        return source;
     }
 }
