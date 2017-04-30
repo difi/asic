@@ -31,7 +31,7 @@ public class AsicWriterTest {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(Configuration.LEGACY)
-                .signBy(keyEntry)
+                .signWith(keyEntry)
                 .build();
 
         // Path path = Paths.get("target/asicwriter2-test.asice");
@@ -61,7 +61,7 @@ public class AsicWriterTest {
     @Test(expectedExceptions = AsicException.class)
     public void triggerExceptionWhenAddingMetadataFile() throws IOException, AsicException {
         AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(Configuration.LEGACY)
-                .signBy(keyEntry)
+                .signWith(keyEntry)
                 .build();
 
         AsicWriter asicWriter = asicWriterFactory.newContainer(ByteStreams.nullOutputStream()).build();
@@ -76,7 +76,7 @@ public class AsicWriterTest {
     @Test(expectedExceptions = AsicException.class)
     public void triggerExceptionWhenAddingAfterSign() throws IOException, AsicException {
         AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(Configuration.LEGACY)
-                .signBy(keyEntry)
+                .signWith(keyEntry)
                 .build();
 
         AsicWriter asicWriter = asicWriterFactory.newContainer(ByteStreams.nullOutputStream()).build();

@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,10 +33,10 @@ public class AsicWriterFactory {
         return new AsicWriterFactoryBuilder(configuration);
     }
 
-    protected AsicWriterFactory(AsicWriterFactoryBuilder builder, Enum configuration) throws AsicException {
-        this.configuration = new ConfigurationWrapper(configuration);
-        this.certificates = builder.certificates;
-        this.keyEntries = builder.keyEntries;
+    protected AsicWriterFactory(AsicWriterFactoryBuilder builder) throws AsicException {
+        this.configuration = new ConfigurationWrapper(builder.configuration);
+        this.certificates = Collections.unmodifiableList(builder.certificates);
+        this.keyEntries = Collections.unmodifiableList(builder.keyEntries);
     }
 
     /**

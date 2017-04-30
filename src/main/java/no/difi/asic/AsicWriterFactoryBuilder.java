@@ -18,7 +18,7 @@ class AsicWriterFactoryBuilder implements AsicWriterBuilder<AsicWriterFactory> {
     /**
      * Enum provided to be used for configuration.
      */
-    private Enum configuration;
+    protected Enum configuration;
 
     /**
      * Certificates used for encryption.
@@ -41,7 +41,7 @@ class AsicWriterFactoryBuilder implements AsicWriterBuilder<AsicWriterFactory> {
      * {@inheritDoc}
      */
     @Override
-    public AsicWriterBuilder<AsicWriterFactory> encryptFor(X509Certificate certificate) {
+    public AsicWriterBuilder<AsicWriterFactory> encryptWith(X509Certificate certificate) {
         certificates.add(certificate);
 
         return this;
@@ -51,7 +51,7 @@ class AsicWriterFactoryBuilder implements AsicWriterBuilder<AsicWriterFactory> {
      * {@inheritDoc}
      */
     @Override
-    public AsicWriterBuilder<AsicWriterFactory> signBy(KeyStore.PrivateKeyEntry privateKeyEntry) {
+    public AsicWriterBuilder<AsicWriterFactory> signWith(KeyStore.PrivateKeyEntry privateKeyEntry) {
         keyEntries.add(privateKeyEntry);
 
         return this;
@@ -62,10 +62,6 @@ class AsicWriterFactoryBuilder implements AsicWriterBuilder<AsicWriterFactory> {
      */
     @Override
     public AsicWriterFactory build() throws AsicException {
-        AsicWriterFactory asicWriterFactory = new AsicWriterFactory(this, configuration);
-        asicWriterFactory.certificates = certificates;
-        asicWriterFactory.keyEntries = keyEntries;
-
-        return asicWriterFactory;
+        return new AsicWriterFactory(this);
     }
 }

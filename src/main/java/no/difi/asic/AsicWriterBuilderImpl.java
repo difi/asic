@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,7 +55,7 @@ class AsicWriterBuilderImpl implements AsicWriterBuilder<AsicWriter> {
      * {@inheritDoc}
      */
     @Override
-    public no.difi.asic.api.AsicWriterBuilder<AsicWriter> encryptFor(X509Certificate certificate) {
+    public no.difi.asic.api.AsicWriterBuilder<AsicWriter> encryptWith(X509Certificate certificate) {
         certificates.add(certificate);
 
         return this;
@@ -64,7 +65,7 @@ class AsicWriterBuilderImpl implements AsicWriterBuilder<AsicWriter> {
      * {@inheritDoc}
      */
     @Override
-    public no.difi.asic.api.AsicWriterBuilder<AsicWriter> signBy(KeyStore.PrivateKeyEntry privateKeyEntry) {
+    public no.difi.asic.api.AsicWriterBuilder<AsicWriter> signWith(KeyStore.PrivateKeyEntry privateKeyEntry) {
         keyEntries.add(privateKeyEntry);
 
         return this;
@@ -76,8 +77,10 @@ class AsicWriterBuilderImpl implements AsicWriterBuilder<AsicWriter> {
     @Override
     public AsicWriter build() throws IOException, AsicException {
         AsicWriter asicWriter = new AsicWriter(outputStream, closeStreamOnClose, asicWriterFactory.configuration);
-        asicWriter.certificates = certificates.isEmpty() ? asicWriterFactory.certificates : certificates;
-        asicWriter.keyEntries = keyEntries.isEmpty() ? asicWriterFactory.keyEntries : keyEntries;
+        asicWriter.certificates = certificates.isEmpty() ?
+                asicWriterFactory.certificates : Collections.unmodifiableList(certificates);
+        asicWriter.keyEntries = keyEntries.isEmpty() ?
+                asicWriterFactory.keyEntries : Collections.unmodifiableList(keyEntries);
 
         if (asicWriter.keyEntries.isEmpty())
             throw new AsicException("No certificates found for signing.");

@@ -17,7 +17,7 @@ public interface AsicWriterBuilder<T> {
      * @param certificate Provided certificate
      * @return Builder instance.
      */
-    AsicWriterBuilder<T> encryptFor(X509Certificate certificate);
+    AsicWriterBuilder<T> encryptWith(X509Certificate certificate);
 
     /**
      * Adds certificate for signing.
@@ -25,7 +25,7 @@ public interface AsicWriterBuilder<T> {
      * @param privateKeyEntry Proviced certificate
      * @return Builder instance.
      */
-    AsicWriterBuilder<T> signBy(KeyStore.PrivateKeyEntry privateKeyEntry);
+    AsicWriterBuilder<T> signWith(KeyStore.PrivateKeyEntry privateKeyEntry);
 
     /**
      * Returns the wanted instances.
