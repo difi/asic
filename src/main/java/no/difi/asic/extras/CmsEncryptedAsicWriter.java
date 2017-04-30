@@ -1,10 +1,11 @@
 package no.difi.asic.extras;
 
 import com.google.common.io.ByteStreams;
-import no.difi.asic.AsicUtils;
-import no.difi.asic.api.AsicWriter;
-import no.difi.asic.model.MimeType;
 import no.difi.asic.SignatureHelper;
+import no.difi.asic.api.AsicWriter;
+import no.difi.asic.lang.AsicException;
+import no.difi.asic.model.MimeType;
+import no.difi.asic.util.MimeTypes;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.cms.CMSAlgorithm;
 import org.bouncycastle.cms.CMSEnvelopedData;
@@ -81,7 +82,11 @@ public class CmsEncryptedAsicWriter extends CmsEncryptedAsicAbstract implements 
      */
     @Override
     public AsicWriter add(InputStream inputStream, String filename) throws IOException {
-        return add(inputStream, filename, AsicUtils.detectMime(filename));
+        try {
+            return add(inputStream, filename, MimeTypes.detect(filename));
+        } catch (AsicException e) {
+            throw new IOException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -131,7 +136,11 @@ public class CmsEncryptedAsicWriter extends CmsEncryptedAsicAbstract implements 
     }
 
     public AsicWriter addEncrypted(InputStream inputStream, String filename) throws IOException {
-        return addEncrypted(inputStream, filename, AsicUtils.detectMime(filename));
+        try {
+            return addEncrypted(inputStream, filename, MimeTypes.detect(filename));
+        } catch (AsicException e) {
+            throw new IOException(e.getMessage(), e);
+        }
     }
 
     public AsicWriter addEncrypted(File file, String entryName, MimeType mimeType) throws IOException {

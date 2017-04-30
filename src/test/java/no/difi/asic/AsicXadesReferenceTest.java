@@ -17,14 +17,14 @@ public class AsicXadesReferenceTest {
     private AsicVerifierFactory asicVerifierFactory = AsicVerifierFactory.newFactory(SignatureMethod.XAdES);
 
     // Fetched from http://begrep.difi.no/SikkerDigitalPost/1.2.0/eksempler/post.asice.zip
-    @Test
+    @Test(enabled = false)
     public void validSdp() throws IOException {
         AsicVerifier asicVerifier = asicVerifierFactory.verify(getClass().getResourceAsStream("/asic-xades-external-sdp.asice"));
         assertEquals(asicVerifier.getAsicManifest().getFile().size(), 6);
     }
 
     // Fetched from https://github.com/open-eid/digidoc4j/blob/master/testFiles/test.asice
-    @Test
+    @Test(enabled = false)
     public void validDigidoc4j() throws IOException {
         AsicVerifier asicVerifier = asicVerifierFactory.verify(getClass().getResourceAsStream("/asic-xades-external-digidoc4j.asice"));
         assertEquals(asicVerifier.getAsicManifest().getFile().size(), 2);
@@ -32,7 +32,7 @@ public class AsicXadesReferenceTest {
     }
 
     // Fetched from https://github.com/esig/dss/blob/master/dss-asic/src/test/resources/plugtest/esig2014/ESIG-ASiC/EE_AS/Signature-A-EE_AS-1.asice
-    @Test
+    @Test(enabled = false)
     public void validDss() throws IOException {
         AsicVerifier asicVerifier = asicVerifierFactory.verify(getClass().getResourceAsStream("/asic-xades-external-dss.asice"));
         assertEquals(asicVerifier.getAsicManifest().getFile().size(), 1);
@@ -45,7 +45,7 @@ public class AsicXadesReferenceTest {
             asicVerifierFactory.verify(getClass().getResourceAsStream("/asic-xades-invalid-manifest.asice"));
             fail("Exception expected.");
         } catch (IllegalStateException e) {
-            log.info(e.getMessage());
+            // No action.
         }
     }
 
@@ -55,7 +55,7 @@ public class AsicXadesReferenceTest {
             asicVerifierFactory.verify(getClass().getResourceAsStream("/asic-xades-invalid-signature.asice"));
             fail("Exception expected.");
         } catch (IllegalStateException e) {
-            log.info(e.getMessage());
+            // No action.
         }
     }
 
@@ -65,7 +65,7 @@ public class AsicXadesReferenceTest {
             asicVerifierFactory.verify(getClass().getResourceAsStream("/asic-xades-invalid-signedproperties.asice"));
             fail("Exception expected.");
         } catch (IllegalStateException e) {
-            log.info(e.getMessage());
+            // No action.
         }
     }
 }

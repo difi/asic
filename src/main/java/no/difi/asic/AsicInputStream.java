@@ -1,8 +1,6 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,8 +9,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 class AsicInputStream extends ZipInputStream {
-
-    public static final Logger logger = LoggerFactory.getLogger(AsicInputStream.class);
 
     public AsicInputStream(InputStream in) {
         super(in);
@@ -26,7 +22,6 @@ class AsicInputStream extends ZipInputStream {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ByteStreams.copy(this, baos);
 
-            logger.debug("Content of mimetype: {}", baos.toString());
             if (!AsicUtils.MIMETYPE_ASICE.equals(baos.toString()))
                 throw new IllegalStateException("Content is not ASiC-E container.");
 

@@ -144,9 +144,6 @@ abstract class AbstractAsicReader implements Closeable {
             // Handling manifest in ASiC CAdES.
             String sigReference = CadesAsicManifest.extractAndVerify(contentsOfStream.toString(), manifestVerifier);
             handleCadesSigning(sigReference, contentsOfStream.toString());
-        } else if (AsicUtils.PATTERN_XADES_SIGNATURES.matcher(currentZipEntry.getName()).matches()) {
-            // Handling manifest in ASiC XAdES.
-            XadesAsicManifest.extractAndVerify(contentsOfStream.toString(), manifestVerifier);
         } else if (AsicUtils.PATTERN_CADES_SIGNATURE.matcher(currentZipEntry.getName()).matches()) {
             // Handling signature in ASiC CAdES.
             handleCadesSigning(currentZipEntry.getName(), contentsOfStream);

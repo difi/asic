@@ -9,7 +9,7 @@ import javax.xml.bind.JAXBException;
 /**
  * @author erlend
  */
-abstract class OasisManifestCommons {
+public abstract class OasisManifestCommons {
 
     protected static final JAXBContext JAXB_CONTEXT;
 

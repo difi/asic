@@ -3,24 +3,22 @@ package no.difi.asic;
 import no.difi.asic.model.MimeType;
 import no.difi.commons.asic.jaxb.cades.ASiCManifestType;
 import no.difi.commons.asic.jaxb.cades.DataObjectReferenceType;
-import no.difi.commons.asic.jaxb.cades.ObjectFactory;
-import no.difi.commons.asic.jaxb.cades.SigReferenceType;
 import no.difi.commons.asic.jaxb.xmldsig.DigestMethodType;
 import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 
 class CadesAsicManifest extends AbstractAsicManifest {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractAsicManifest.class);
 
     private static JAXBContext jaxbContext; // Thread safe
-
-    private static ObjectFactory objectFactory = new ObjectFactory();
 
     static {
         try {
@@ -69,30 +67,6 @@ class CadesAsicManifest extends AbstractAsicManifest {
                 rootFilenameIsSet = true;
                 return;
             }
-        }
-    }
-
-    public void setSignature(String filename, String mimeType) {
-        SigReferenceType sigReferenceType = new SigReferenceType();
-        sigReferenceType.setURI(filename);
-        sigReferenceType.setMimeType(mimeType);
-        ASiCManifestType.setSigReference(sigReferenceType);
-    }
-
-    public ASiCManifestType getASiCManifestType() {
-        return ASiCManifestType;
-    }
-
-    public byte[] toBytes() {
-        try {
-            Marshaller marshaller = jaxbContext.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            marshaller.marshal(objectFactory.createASiCManifest(ASiCManifestType), baos);
-            return baos.toByteArray();
-        } catch (JAXBException e) {
-            throw new IllegalStateException("Unable to marshall the ASiCManifest into string output", e);
         }
     }
 

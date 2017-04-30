@@ -1,9 +1,11 @@
 package no.difi.asic;
 
+import com.google.common.io.ByteStreams;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.util.KeyStoreUtil;
 import no.difi.asic.util.MimeTypes;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -14,12 +16,17 @@ import java.security.KeyStore;
  */
 public class AsicWriter2Test {
 
-    @Test
-    public void simple() throws IOException, AsicException {
-        KeyStore.PrivateKeyEntry keyEntry;
+    KeyStore.PrivateKeyEntry keyEntry;
+
+    @BeforeClass
+    public void beforeClass() throws IOException, AsicException {
         try (InputStream inputStream = getClass().getResourceAsStream("/kontaktinfo-client-test.jks")) {
             keyEntry = KeyStoreUtil.load(inputStream, "changeit", "client_alias", "changeit");
         }
+    }
+
+    @Test
+    public void simple() throws IOException, AsicException {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -49,5 +56,40 @@ public class AsicWriter2Test {
                 .verify(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
 
         Assert.assertEquals(asicVerifier.getAsicManifest().getFile().size(), 2);
+    }
+
+    @Test(expectedExceptions = AsicException.class)
+    public void triggerExceptionWhenAddingMetadataFile() throws IOException, AsicException {
+        AsicWriterFactory2 asicWriterFactory = AsicWriterFactory2.newFactory(Configuration.LAGACY)
+                .signBy(keyEntry)
+                .build();
+
+        AsicWriter2 asicWriter = asicWriterFactory.newContainer(ByteStreams.nullOutputStream()).build();
+
+        try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
+            asicWriter.add(inputStream, "META-INF/bii-envelope.xml", MimeTypes.XML);
+        }
+
+        asicWriter.sign();
+    }
+
+    @Test(expectedExceptions = AsicException.class)
+    public void triggerExceptionWhenAddingAfterSign() throws IOException, AsicException {
+        AsicWriterFactory2 asicWriterFactory = AsicWriterFactory2.newFactory(Configuration.LAGACY)
+                .signBy(keyEntry)
+                .build();
+
+        AsicWriter2 asicWriter = asicWriterFactory.newContainer(ByteStreams.nullOutputStream()).build();
+
+        try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
+            asicWriter.add(inputStream, "bii-envelope.xml", null);
+        }
+
+        asicWriter.sign();
+
+        // This is expected to trigger exception.
+        try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
+            asicWriter.add(inputStream, "bii-envelope.xml", MimeTypes.XML);
+        }
     }
 }
