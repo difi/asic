@@ -34,6 +34,7 @@ import java.util.Arrays;
  *         Date: 11.07.15
  *         Time: 22.53
  */
+@Deprecated
 public class SignatureHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(SignatureHelper.class);

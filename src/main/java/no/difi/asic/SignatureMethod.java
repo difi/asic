@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+@Deprecated
 public enum SignatureMethod {
     CAdES(MessageDigestAlgorithm.SHA256),
     XAdES(MessageDigestAlgorithm.SHA256),

@@ -14,7 +14,7 @@ import java.security.KeyStore;
 /**
  * @author erlend
  */
-public class AsicWriter2Test {
+public class AsicWriterTest {
 
     KeyStore.PrivateKeyEntry keyEntry;
 
@@ -30,14 +30,14 @@ public class AsicWriter2Test {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        AsicWriterFactory2 asicWriterFactory = AsicWriterFactory2.newFactory(Configuration.LAGACY)
+        AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(Configuration.LEGACY)
                 .signBy(keyEntry)
                 .build();
 
         // Path path = Paths.get("target/asicwriter2-test.asice");
         // try (OutputStream outputStream = Files.newOutputStream(path);
         try (OutputStream outputStream = byteArrayOutputStream;
-             AsicWriter2 asicWriter = asicWriterFactory.newContainer(outputStream).build()) {
+             AsicWriter asicWriter = asicWriterFactory.newContainer(outputStream).build()) {
 
             try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
                 asicWriter.add(inputStream, "bii-envelope.xml", MimeTypes.XML);
@@ -60,11 +60,11 @@ public class AsicWriter2Test {
 
     @Test(expectedExceptions = AsicException.class)
     public void triggerExceptionWhenAddingMetadataFile() throws IOException, AsicException {
-        AsicWriterFactory2 asicWriterFactory = AsicWriterFactory2.newFactory(Configuration.LAGACY)
+        AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(Configuration.LEGACY)
                 .signBy(keyEntry)
                 .build();
 
-        AsicWriter2 asicWriter = asicWriterFactory.newContainer(ByteStreams.nullOutputStream()).build();
+        AsicWriter asicWriter = asicWriterFactory.newContainer(ByteStreams.nullOutputStream()).build();
 
         try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
             asicWriter.add(inputStream, "META-INF/bii-envelope.xml", MimeTypes.XML);
@@ -75,11 +75,11 @@ public class AsicWriter2Test {
 
     @Test(expectedExceptions = AsicException.class)
     public void triggerExceptionWhenAddingAfterSign() throws IOException, AsicException {
-        AsicWriterFactory2 asicWriterFactory = AsicWriterFactory2.newFactory(Configuration.LAGACY)
+        AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(Configuration.LEGACY)
                 .signBy(keyEntry)
                 .build();
 
-        AsicWriter2 asicWriter = asicWriterFactory.newContainer(ByteStreams.nullOutputStream()).build();
+        AsicWriter asicWriter = asicWriterFactory.newContainer(ByteStreams.nullOutputStream()).build();
 
         try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
             asicWriter.add(inputStream, "bii-envelope.xml", null);

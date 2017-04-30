@@ -1,6 +1,5 @@
 package no.difi.asic;
 
-import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
@@ -15,17 +14,17 @@ import java.io.OutputStream;
 /**
  * @author erlend
  */
-class AsicWriterLayer2 implements AsicWriterLayer {
+class AsicWriterLayer implements no.difi.asic.api.AsicWriterLayer {
 
-    private AsicOutputStream2 asicOutputStream;
+    private AsicOutputStream asicOutputStream;
 
     private MultiMessageDigest messageDigest;
 
     private Container container;
 
-    public AsicWriterLayer2(OutputStream outputStream, MultiMessageDigest messageDigest, Container container)
+    public AsicWriterLayer(OutputStream outputStream, MultiMessageDigest messageDigest, Container container)
             throws IOException {
-        this.asicOutputStream = new AsicOutputStream2(outputStream);
+        this.asicOutputStream = new AsicOutputStream(outputStream);
         this.messageDigest = messageDigest;
         this.container = container;
     }

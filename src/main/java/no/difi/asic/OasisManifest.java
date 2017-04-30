@@ -10,6 +10,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 
+@Deprecated
 class OasisManifest extends OasisManifestCommons {
 
     public static Manifest read(InputStream inputStream) {

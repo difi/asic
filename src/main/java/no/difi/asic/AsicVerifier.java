@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Deprecated
 public class AsicVerifier extends AbstractAsicReader {
 
     AsicVerifier(MessageDigestAlgorithm messageDigestAlgorithm, InputStream inputStream) throws IOException {

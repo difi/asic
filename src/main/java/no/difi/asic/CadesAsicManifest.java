@@ -14,6 +14,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 
+@Deprecated
 class CadesAsicManifest extends AbstractAsicManifest {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractAsicManifest.class);

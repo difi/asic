@@ -2,6 +2,7 @@ package no.difi.asic;
 
 import java.util.regex.Pattern;
 
+@Deprecated
 public class AsicUtils {
 
     /**

@@ -2,7 +2,6 @@ package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
 import no.difi.asic.annotation.Processor;
-import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.config.ConfigurationWrapper;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
@@ -21,11 +20,11 @@ import java.util.List;
 /**
  * @author erlend
  */
-public class AsicWriter2 implements Closeable {
+public class AsicWriter implements Closeable {
 
     private OutputStream outputStream;
 
-    private AsicWriterLayer asicWriterLayer;
+    private no.difi.asic.api.AsicWriterLayer asicWriterLayer;
 
     private boolean closeStreamOnClose;
 
@@ -39,7 +38,7 @@ public class AsicWriter2 implements Closeable {
 
     protected List<KeyStore.PrivateKeyEntry> keyEntries;
 
-    protected AsicWriter2(OutputStream outputStream, boolean closeStreamOnClose, ConfigurationWrapper configuration)
+    protected AsicWriter(OutputStream outputStream, boolean closeStreamOnClose, ConfigurationWrapper configuration)
             throws IOException, AsicException {
         this.configuration = configuration;
         this.outputStream = outputStream;
@@ -47,7 +46,7 @@ public class AsicWriter2 implements Closeable {
 
         MultiMessageDigest messageDigest =
                 new MultiMessageDigest(configuration.getSignature().getDataObjectAlgorithm());
-        this.asicWriterLayer = new AsicWriterLayer2(outputStream, messageDigest, container);
+        this.asicWriterLayer = new AsicWriterLayer(outputStream, messageDigest, container);
 
         configuration.process(Processor.State.INITIAL, asicWriterLayer, container);
     }

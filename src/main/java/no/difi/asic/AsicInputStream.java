@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@Deprecated
 class AsicInputStream extends ZipInputStream {
 
     public AsicInputStream(InputStream in) {

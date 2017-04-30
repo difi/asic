@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author erlend
  */
-class AsicWriterFactoryBuilder2 implements AsicWriterBuilder<AsicWriterFactory2> {
+class AsicWriterFactoryBuilder implements AsicWriterBuilder<AsicWriterFactory> {
 
     /**
      * Enum provided to be used for configuration.
@@ -33,7 +33,7 @@ class AsicWriterFactoryBuilder2 implements AsicWriterBuilder<AsicWriterFactory2>
     /**
      * Protected constructor for this builder.
      */
-    protected AsicWriterFactoryBuilder2(Enum configuration) {
+    protected AsicWriterFactoryBuilder(Enum configuration) {
         this.configuration = configuration;
     }
 
@@ -41,7 +41,7 @@ class AsicWriterFactoryBuilder2 implements AsicWriterBuilder<AsicWriterFactory2>
      * {@inheritDoc}
      */
     @Override
-    public AsicWriterBuilder<AsicWriterFactory2> encryptFor(X509Certificate certificate) {
+    public AsicWriterBuilder<AsicWriterFactory> encryptFor(X509Certificate certificate) {
         certificates.add(certificate);
 
         return this;
@@ -51,7 +51,7 @@ class AsicWriterFactoryBuilder2 implements AsicWriterBuilder<AsicWriterFactory2>
      * {@inheritDoc}
      */
     @Override
-    public AsicWriterBuilder<AsicWriterFactory2> signBy(KeyStore.PrivateKeyEntry privateKeyEntry) {
+    public AsicWriterBuilder<AsicWriterFactory> signBy(KeyStore.PrivateKeyEntry privateKeyEntry) {
         keyEntries.add(privateKeyEntry);
 
         return this;
@@ -61,8 +61,8 @@ class AsicWriterFactoryBuilder2 implements AsicWriterBuilder<AsicWriterFactory2>
      * {@inheritDoc}
      */
     @Override
-    public AsicWriterFactory2 build() throws AsicException {
-        AsicWriterFactory2 asicWriterFactory = new AsicWriterFactory2(this, configuration);
+    public AsicWriterFactory build() throws AsicException {
+        AsicWriterFactory asicWriterFactory = new AsicWriterFactory(this, configuration);
         asicWriterFactory.certificates = certificates;
         asicWriterFactory.keyEntries = keyEntries;
 

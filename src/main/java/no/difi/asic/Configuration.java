@@ -33,7 +33,7 @@ public enum Configuration {
                     reader = OasisManifestReader.class,
                     writer = OasisManifestWriter.class)
     })
-    LAGACY,
+    LEGACY,
 
     @Encryption(
             algorithm = EncryptionAlgorithm.AES256_GCM,

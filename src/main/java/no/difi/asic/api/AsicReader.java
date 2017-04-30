@@ -5,6 +5,7 @@ import no.difi.commons.asic.jaxb.asic.AsicManifest;
 import java.io.*;
 import java.nio.file.Path;
 
+@Deprecated
 public interface AsicReader extends Closeable {
 
     /**

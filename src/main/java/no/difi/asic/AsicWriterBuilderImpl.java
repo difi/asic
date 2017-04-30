@@ -11,16 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder to create AsicWriter. Allows overriding certificates and keys provided when creating AsicWriterFactory.
+ * Builder to create AsicWriterOld. Allows overriding certificates and keys provided when creating AsicWriterFactory.
  *
  * @author erlend
  */
-class AsicWriterBuilder2 implements AsicWriterBuilder<AsicWriter2> {
+class AsicWriterBuilderImpl implements AsicWriterBuilder<AsicWriter> {
 
     /**
      * Factory used to initiate this builder.
      */
-    protected AsicWriterFactory2 asicWriterFactory2;
+    protected AsicWriterFactory asicWriterFactory;
 
     /**
      * OutputStream provided for content.
@@ -28,8 +28,8 @@ class AsicWriterBuilder2 implements AsicWriterBuilder<AsicWriter2> {
     protected OutputStream outputStream;
 
     /**
-     * Indicator to close OutputStream on AsicWriter#close. Determined by the factory based upon methods in
-     * factory used to create AsicWriter.
+     * Indicator to close OutputStream on AsicWriterOld#close. Determined by the factory based upon methods in
+     * factory used to create AsicWriterOld.
      */
     protected boolean closeStreamOnClose;
 
@@ -46,7 +46,7 @@ class AsicWriterBuilder2 implements AsicWriterBuilder<AsicWriter2> {
     /**
      * Protected constructor for this builder.
      */
-    protected AsicWriterBuilder2() {
+    protected AsicWriterBuilderImpl() {
         // No action
     }
 
@@ -54,7 +54,7 @@ class AsicWriterBuilder2 implements AsicWriterBuilder<AsicWriter2> {
      * {@inheritDoc}
      */
     @Override
-    public AsicWriterBuilder<AsicWriter2> encryptFor(X509Certificate certificate) {
+    public no.difi.asic.api.AsicWriterBuilder<AsicWriter> encryptFor(X509Certificate certificate) {
         certificates.add(certificate);
 
         return this;
@@ -64,7 +64,7 @@ class AsicWriterBuilder2 implements AsicWriterBuilder<AsicWriter2> {
      * {@inheritDoc}
      */
     @Override
-    public AsicWriterBuilder<AsicWriter2> signBy(KeyStore.PrivateKeyEntry privateKeyEntry) {
+    public no.difi.asic.api.AsicWriterBuilder<AsicWriter> signBy(KeyStore.PrivateKeyEntry privateKeyEntry) {
         keyEntries.add(privateKeyEntry);
 
         return this;
@@ -74,10 +74,10 @@ class AsicWriterBuilder2 implements AsicWriterBuilder<AsicWriter2> {
      * {@inheritDoc}
      */
     @Override
-    public AsicWriter2 build() throws IOException, AsicException {
-        AsicWriter2 asicWriter = new AsicWriter2(outputStream, closeStreamOnClose, asicWriterFactory2.configuration);
-        asicWriter.certificates = certificates.isEmpty() ? asicWriterFactory2.certificates : certificates;
-        asicWriter.keyEntries = keyEntries.isEmpty() ? asicWriterFactory2.keyEntries : keyEntries;
+    public AsicWriter build() throws IOException, AsicException {
+        AsicWriter asicWriter = new AsicWriter(outputStream, closeStreamOnClose, asicWriterFactory.configuration);
+        asicWriter.certificates = certificates.isEmpty() ? asicWriterFactory.certificates : certificates;
+        asicWriter.keyEntries = keyEntries.isEmpty() ? asicWriterFactory.keyEntries : keyEntries;
 
         if (asicWriter.keyEntries.isEmpty())
             throw new AsicException("No certificates found for signing.");

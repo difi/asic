@@ -23,6 +23,7 @@ import java.util.zip.ZipEntry;
  *
  * @author Erlend Klakegg Bergheim
  */
+@Deprecated
 abstract class AbstractAsicReader implements Closeable {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAsicReader.class);

@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+@Deprecated
 enum MessageDigestAlgorithm {
     SHA256("SHA-256", "http://www.w3.org/2001/04/xmlenc#sha256"),
     SHA384("SHA-384", "http://www.w3.org/2001/04/xmlenc#sha384"),

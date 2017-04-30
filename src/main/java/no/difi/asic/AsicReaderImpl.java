@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Deprecated
 class AsicReaderImpl extends AbstractAsicReader implements AsicReader {
 
     AsicReaderImpl(MessageDigestAlgorithm messageDigestAlgorithm, InputStream inputStream) throws IOException {

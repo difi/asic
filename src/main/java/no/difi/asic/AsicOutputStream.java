@@ -13,13 +13,13 @@ import java.util.zip.ZipOutputStream;
  *
  * @author erlend
  */
-class AsicOutputStream2 extends OutputStream {
+class AsicOutputStream extends OutputStream {
 
     public static final String APPLICATION_VND_ETSI_ASIC_E_ZIP = "application/vnd.etsi.asic-e+zip";
 
     private ZipOutputStream zipOutputStream;
 
-    public AsicOutputStream2(OutputStream outputStream) throws IOException {
+    public AsicOutputStream(OutputStream outputStream) throws IOException {
         // Initiate ZIP stream
         zipOutputStream = new ZipOutputStream(outputStream);
 

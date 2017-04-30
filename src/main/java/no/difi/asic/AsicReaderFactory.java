@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Deprecated
 public class AsicReaderFactory {
 
     public static AsicReaderFactory newFactory() {

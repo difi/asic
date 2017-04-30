@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Deprecated
 public class AsicVerifierFactory {
 
     public static AsicVerifierFactory newFactory() {

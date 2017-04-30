@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author erlend
  */
-public class AsicWriterFactory2 {
+public class AsicWriterFactory {
 
     protected ConfigurationWrapper configuration;
 
@@ -24,63 +24,63 @@ public class AsicWriterFactory2 {
 
     protected List<KeyStore.PrivateKeyEntry> keyEntries;
 
-    public static AsicWriterBuilder<AsicWriterFactory2> newFactory() throws AsicException {
-        return newFactory(Configuration.LAGACY);
+    public static AsicWriterBuilder<AsicWriterFactory> newFactory() throws AsicException {
+        return newFactory(Configuration.LEGACY);
     }
 
-    public static AsicWriterBuilder<AsicWriterFactory2> newFactory(Enum configuration) throws AsicException {
-        return new AsicWriterFactoryBuilder2(configuration);
+    public static AsicWriterBuilder<AsicWriterFactory> newFactory(Enum configuration) throws AsicException {
+        return new AsicWriterFactoryBuilder(configuration);
     }
 
-    protected AsicWriterFactory2(AsicWriterFactoryBuilder2 builder, Enum configuration) throws AsicException {
+    protected AsicWriterFactory(AsicWriterFactoryBuilder builder, Enum configuration) throws AsicException {
         this.configuration = new ConfigurationWrapper(configuration);
         this.certificates = builder.certificates;
         this.keyEntries = builder.keyEntries;
     }
 
     /**
-     * Factory method creating a new AsicWriter, which will create an ASiC archive in the supplied
+     * Factory method creating a new AsicWriterOld, which will create an ASiC archive in the supplied
      * directory with the supplied file name
      *
      * @param outputDir the directory in which the archive will be created.
      * @param filename  the name of the archive.
-     * @return an instance of AsicWriter
+     * @return an instance of AsicWriterOld
      */
-    public AsicWriterBuilder<AsicWriter2> newContainer(File outputDir, String filename) throws IOException, AsicException {
+    public AsicWriterBuilder<AsicWriter> newContainer(File outputDir, String filename) throws IOException, AsicException {
         return newContainer(new File(outputDir, filename));
     }
 
     /**
-     * Creates a new AsicWriter, which will create an ASiC archive in the supplied file.
+     * Creates a new AsicWriterOld, which will create an ASiC archive in the supplied file.
      *
      * @param file the file reference to the archive.
-     * @return an instance of AsicWriter
+     * @return an instance of AsicWriterOld
      */
-    public AsicWriterBuilder<AsicWriter2> newContainer(File file) throws IOException, AsicException {
+    public AsicWriterBuilder<AsicWriter> newContainer(File file) throws IOException, AsicException {
         return newContainer(file.toPath());
     }
 
     /**
      * @see #newContainer(File)
      */
-    public AsicWriterBuilder<AsicWriter2> newContainer(Path path) throws IOException, AsicException {
+    public AsicWriterBuilder<AsicWriter> newContainer(Path path) throws IOException, AsicException {
         return newContainer(Files.newOutputStream(path), true);
     }
 
     /**
-     * Creates a new AsicWriter, which will createFilter the container contents to the supplied output stream.
+     * Creates a new AsicWriterOld, which will createFilter the container contents to the supplied output stream.
      *
      * @param outputStream stream into which the archive will be written.
-     * @return an instance of AsicWriter
+     * @return an instance of AsicWriterOld
      */
-    public AsicWriterBuilder<AsicWriter2> newContainer(OutputStream outputStream) throws IOException, AsicException {
+    public AsicWriterBuilder<AsicWriter> newContainer(OutputStream outputStream) throws IOException, AsicException {
         return newContainer(outputStream, false);
     }
 
-    private AsicWriterBuilder<AsicWriter2> newContainer(OutputStream outputStream, boolean closeStreamOnClose)
+    private AsicWriterBuilder<AsicWriter> newContainer(OutputStream outputStream, boolean closeStreamOnClose)
             throws IOException, AsicException {
-        AsicWriterBuilder2 asicWriterBuilder = new AsicWriterBuilder2();
-        asicWriterBuilder.asicWriterFactory2 = this;
+        AsicWriterBuilderImpl asicWriterBuilder = new AsicWriterBuilderImpl();
+        asicWriterBuilder.asicWriterFactory = this;
         asicWriterBuilder.outputStream = outputStream;
         asicWriterBuilder.closeStreamOnClose = closeStreamOnClose;
 

@@ -5,6 +5,7 @@ import no.difi.asic.model.MimeType;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@Deprecated
 abstract class AbstractAsicManifest {
 
     protected MessageDigestAlgorithm messageDigestAlgorithm;
