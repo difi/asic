@@ -20,8 +20,8 @@ public class AsicCadesReferenceTest {
 
     private static Logger log = LoggerFactory.getLogger(AsicCadesReferenceTest.class);
 
-    private AsicVerifierFactory asicVerifierFactory = AsicVerifierFactory.newFactory(SignatureMethod.CAdES);
-    private AsicReaderFactory asicRederFactory = AsicReaderFactory.newFactory(SignatureMethod.CAdES);
+    private AsicVerifierFactory asicVerifierFactory = AsicVerifierFactory.newFactory();
+    private AsicReaderFactory asicRederFactory = AsicReaderFactory.newFactory();
 
     @BeforeClass
     public void beforeClass() {

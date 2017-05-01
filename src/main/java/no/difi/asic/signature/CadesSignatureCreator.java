@@ -124,9 +124,8 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         // Write element to baos
-        try (OutputStream outputStream =
-                     asicWriterLayer.addContent(DataObject.Type.MANIFEST,
-                             String.format(MANIFEST_FILENAME, identifier), MimeTypes.XML)) {
+        try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.MANIFEST,
+                String.format(MANIFEST_FILENAME, identifier), MimeTypes.XML)) {
             Marshaller marshaller = JAXB_CONTEXT.createMarshaller();
             marshaller.marshal(jaxbElement, byteArrayOutputStream);
 

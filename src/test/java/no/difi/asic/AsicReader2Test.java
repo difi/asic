@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import com.google.common.io.ByteStreams;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -26,6 +27,10 @@ public class AsicReader2Test {
             String filename;
             while ((filename = asicReader.next()) != null) {
                 System.out.println(filename);
+
+                try (InputStream content = asicReader.getContent()) {
+                    ByteStreams.copy(content, ByteStreams.nullOutputStream());
+                }
             }
 
             System.out.println(asicReader);

@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.io.UnclosableInputStream;
 import no.difi.commons.asic.jaxb.asic.AsicManifest;
 import no.difi.commons.asic.jaxb.asic.Certificate;
@@ -48,10 +49,10 @@ abstract class AbstractAsicReader implements Closeable {
         this.manifestVerifier = new ManifestVerifier(messageDigestAlgorithm);
 
         try {
-            messageDigest = MessageDigest.getInstance(messageDigestAlgorithm.getAlgorithm());
+            messageDigest = MessageDigest.getInstance(messageDigestAlgorithm.getString());
             messageDigest.reset();
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(String.format("Algorithm %s not supported", messageDigestAlgorithm.getAlgorithm()), e);
+            throw new IllegalStateException(String.format("Algorithm %s not supported", messageDigestAlgorithm.getString()), e);
         }
 
         zipInputStream = new AsicInputStream(inputStream);

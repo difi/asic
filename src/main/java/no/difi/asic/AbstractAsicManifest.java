@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.model.MimeType;
 
 import java.security.MessageDigest;
@@ -16,19 +17,11 @@ abstract class AbstractAsicManifest {
 
         // Create message digest
         try {
-            messageDigest = MessageDigest.getInstance(messageDigestAlgorithm.getAlgorithm());
+            messageDigest = MessageDigest.getInstance(messageDigestAlgorithm.getString());
             messageDigest.reset();
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(String.format("Algorithm %s not supported", messageDigestAlgorithm.getAlgorithm()), e);
+            throw new IllegalStateException(String.format("Algorithm %s not supported", messageDigestAlgorithm.getString()), e);
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public MessageDigest getMessageDigest() {
-        messageDigest.reset();
-        return messageDigest;
     }
 
     /**

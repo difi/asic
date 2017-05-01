@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.util.MimeTypes;
 import org.testng.annotations.Test;
 

@@ -1,10 +1,11 @@
 package no.difi.asic;
 
-import static org.testng.Assert.*;
-
+import no.difi.asic.code.MessageDigestAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.fail;
 
 public class ManifestVerifierTest {
 
@@ -15,11 +16,11 @@ public class ManifestVerifierTest {
         ManifestVerifier manifestVerifier = new ManifestVerifier(MessageDigestAlgorithm.SHA256);
 
         // Not to fail
-        manifestVerifier.update("sha256", null, null, MessageDigestAlgorithm.SHA256.getUri(), null);
+        manifestVerifier.update("sha256", null, null, MessageDigestAlgorithm.SHA256.getURI(), null);
 
         try {
             // Should fail
-            manifestVerifier.update("sha384", null, null, MessageDigestAlgorithm.SHA384.getUri(), null);
+            manifestVerifier.update("sha384", null, null, MessageDigestAlgorithm.SHA384.getURI(), null);
             fail("Exception expected");
         } catch (IllegalStateException e) {
             log.info(e.getMessage());
@@ -27,7 +28,7 @@ public class ManifestVerifierTest {
 
         try {
             // Should fail
-            manifestVerifier.update("sha512", null, null, MessageDigestAlgorithm.SHA512.getUri(), null);
+            manifestVerifier.update("sha512", null, null, MessageDigestAlgorithm.SHA512.getURI(), null);
             fail("Exception expected");
         } catch (IllegalStateException e) {
             log.info(e.getMessage());

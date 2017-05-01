@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.model.MimeType;
 import no.difi.commons.asic.jaxb.cades.ASiCManifestType;
 import no.difi.commons.asic.jaxb.cades.DataObjectReferenceType;
@@ -46,7 +47,7 @@ class CadesAsicManifest extends AbstractAsicManifest {
         dataObject.setDigestValue(messageDigest.digest());
 
         DigestMethodType digestMethodType = new DigestMethodType();
-        digestMethodType.setAlgorithm(messageDigestAlgorithm.getUri());
+        digestMethodType.setAlgorithm(messageDigestAlgorithm.getURI());
         dataObject.setDigestMethod(digestMethodType);
 
         ASiCManifestType.getDataObjectReference().add(dataObject);

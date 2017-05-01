@@ -9,6 +9,8 @@ import java.security.PrivateKey;
  */
 public interface DecryptionFilter {
 
+    boolean isEncrypted(String filename);
+
     InputStream createFilter(InputStream inputStream, Enum<?> algorithm, PrivateKey privateKey)
             throws IOException;
 

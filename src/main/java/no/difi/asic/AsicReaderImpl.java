@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import no.difi.asic.api.AsicReader;
+import no.difi.asic.code.MessageDigestAlgorithm;
 
 import java.io.File;
 import java.io.IOException;

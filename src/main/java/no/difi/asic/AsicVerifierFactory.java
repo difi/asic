@@ -1,5 +1,7 @@
 package no.difi.asic;
 
+import no.difi.asic.code.MessageDigestAlgorithm;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +13,6 @@ public class AsicVerifierFactory {
 
     public static AsicVerifierFactory newFactory() {
         return newFactory(MessageDigestAlgorithm.SHA256);
-    }
-
-    public static AsicVerifierFactory newFactory(SignatureMethod signatureMethod) {
-        return newFactory(signatureMethod.getMessageDigestAlgorithm());
     }
 
     static AsicVerifierFactory newFactory(MessageDigestAlgorithm messageDigestAlgorithm) {

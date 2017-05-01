@@ -12,6 +12,11 @@ import java.security.PrivateKey;
 public class CmsDecryptionFilter extends CmsCommons implements DecryptionFilter {
 
     @Override
+    public boolean isEncrypted(String filename) {
+        return filename.endsWith(".p7m");
+    }
+
+    @Override
     public InputStream createFilter(InputStream inputStream, Enum<?> algorithm, PrivateKey privateKey)
             throws IOException {
         return null;

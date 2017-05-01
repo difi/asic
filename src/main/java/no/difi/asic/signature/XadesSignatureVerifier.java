@@ -52,7 +52,7 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
             /*
             for (ReferenceType reference : signedInfoType.getReference()) {
                 if (!reference.getURI().startsWith("#"))
-                    manifestVerifier.update(reference.getURI(), null, reference.getDigestValue(), reference.getDigestMethod().getAlgorithm(), null);
+                    manifestVerifier.update(reference.getURI(), null, reference.getDigestValue(), reference.getDigestMethod().getString(), null);
             }
             */
         }

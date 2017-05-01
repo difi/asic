@@ -51,7 +51,7 @@ class AsicInputStream2 extends InputStream {
     }
 
     public InputStream getContent() {
-        return new UnclosableInputStream(zipInputStream);
+        return zipInputStream;
     }
 
     public void closeEntry() throws IOException {

@@ -1,15 +1,15 @@
 package no.difi.asic;
 
+import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicReaderLayer;
 import no.difi.asic.api.Supporting;
 import no.difi.asic.config.ConfigurationWrapper;
-import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.security.MultiMessageDigest;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class AsicReader2 implements Closeable {
 
     private List<Supporting> handlers = new ArrayList<>();
 
-    public AsicReader2(InputStream inputStream, ConfigurationWrapper configuration) throws IOException, AsicException {
+    public AsicReader2(InputStream inputStream, ConfigurationWrapper configuration) throws IOException {
         this.configuration = configuration;
 
         handlers.add(configuration.getSignature().getSignatureVerifier());
@@ -42,7 +42,7 @@ public class AsicReader2 implements Closeable {
         asicReaderLayer = new AsicReaderLayer2(inputStream, messageDigest, container);
     }
 
-    public String next() throws IOException, AsicException {
+    public String next() throws IOException {
         String filename = asicReaderLayer.next();
 
         if (filename != null) {
@@ -59,6 +59,22 @@ public class AsicReader2 implements Closeable {
 
     public InputStream getContent() throws IOException {
         return asicReaderLayer.getContent();
+    }
+
+    public void writeTo(File file) throws IOException {
+        writeTo(file.toPath());
+    }
+
+    public void writeTo(Path path) throws IOException {
+        try (OutputStream outputStream = Files.newOutputStream(path)) {
+            writeTo(outputStream);
+        }
+    }
+
+    public void writeTo(OutputStream outputStream) throws IOException {
+        try (InputStream inputStream = getContent()) {
+            ByteStreams.copy(inputStream, outputStream);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import no.difi.asic.api.AsicReader;
+import no.difi.asic.code.MessageDigestAlgorithm;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,10 +14,6 @@ public class AsicReaderFactory {
 
     public static AsicReaderFactory newFactory() {
         return newFactory(MessageDigestAlgorithm.SHA256);
-    }
-
-    public static AsicReaderFactory newFactory(SignatureMethod signatureMethod) {
-        return newFactory(signatureMethod.getMessageDigestAlgorithm());
     }
 
     static AsicReaderFactory newFactory(MessageDigestAlgorithm messageDigestAlgorithm) {

@@ -1,5 +1,6 @@
 package no.difi.asic;
 
+import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.commons.asic.jaxb.asic.AsicFile;
 import no.difi.commons.asic.jaxb.asic.AsicManifest;
 import no.difi.commons.asic.jaxb.asic.Certificate;
@@ -25,7 +26,7 @@ class ManifestVerifier {
     }
 
     public void update(String filename, String mimetype, byte[] digest, String digestAlgorithm, String sigReference) {
-        if (messageDigestAlgorithm != null && digestAlgorithm != null && !digestAlgorithm.equals(messageDigestAlgorithm.getUri()))
+        if (messageDigestAlgorithm != null && digestAlgorithm != null && !digestAlgorithm.equals(messageDigestAlgorithm.getURI()))
             throw new IllegalStateException(String.format("Wrong digest method for file %s: %s", filename, digestAlgorithm));
 
         AsicFile asicFile = asicManifestMap.get(filename);

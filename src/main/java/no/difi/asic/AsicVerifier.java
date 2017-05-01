@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.code.MessageDigestAlgorithm;
 
 import java.io.IOException;
 import java.io.InputStream;
