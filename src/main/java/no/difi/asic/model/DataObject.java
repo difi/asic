@@ -69,6 +69,11 @@ public class DataObject implements Serializable {
         return Collections.unmodifiableList(signers);
     }
 
+    @Override
+    public String toString() {
+        return "[" + type + "] " + filename + " (" + mimeType + ')';
+    }
+
     public enum Type {
         DATA, METADATA, MANIFEST, DETACHED_SIGNATURE
     }

@@ -3,8 +3,7 @@ package no.difi.asic.api;
 /**
  * @author erlend
  */
-public interface SignatureVerifier {
+public interface SignatureVerifier extends Supporting {
 
-    boolean isSignatureFile(String filename);
 
 }

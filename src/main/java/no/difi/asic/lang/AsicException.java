@@ -1,9 +1,11 @@
 package no.difi.asic.lang;
 
+import java.io.IOException;
+
 /**
  * @author erlend
  */
-public class AsicException extends Exception {
+public class AsicException extends IOException {
 
     public AsicException(String message) {
         super(message);

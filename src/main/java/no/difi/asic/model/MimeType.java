@@ -6,8 +6,6 @@ public class MimeType implements Serializable {
 
     private static final long serialVersionUID = 5501916549809487201L;
 
-    public static final MimeType XML = MimeType.forString("application/xml");
-
     public static MimeType forString(String mimeType) {
         return new MimeType(mimeType);
     }

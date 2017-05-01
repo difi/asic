@@ -2,6 +2,7 @@ package no.difi.asic.model;
 
 import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.lang.AsicException;
+import no.difi.asic.lang.ChecksumException;
 import no.difi.asic.security.MultiMessageDigest;
 
 import java.io.Serializable;
@@ -52,7 +53,7 @@ public class Container implements Serializable {
         dataObject.setMimeType(mimeType);
     }
 
-    public void update(String filename, MultiMessageDigest messageDigest) {
+    public void update(String filename, MultiMessageDigest messageDigest) throws AsicException {
         DataObject dataObject = dataObjects.get(filename);
 
         if (dataObject == null) {
@@ -60,7 +61,8 @@ public class Container implements Serializable {
             dataObjects.put(filename, dataObject);
         }
 
-        dataObject.getHash().update(messageDigest);
+        if (!dataObject.getHash().update(messageDigest))
+            throw new ChecksumException(String.format("Invalid checksum for '%s'.", filename));
     }
 
     public void verify(Signer signer, String filename, MessageDigestAlgorithm algorithm, byte[] digest)
@@ -69,7 +71,7 @@ public class Container implements Serializable {
             throw new IllegalStateException("Verification of content is performed when reading a container.");
 
         if (!dataObjects.get(filename).verify(signer, algorithm, digest))
-            throw new AsicException(String.format("Unable to verify digest for file '%s'.", filename));
+            throw new ChecksumException(String.format("Unable to verify digest for file '%s'.", filename));
 
         if (!signers.contains(signer))
             signers.add(signer);

@@ -1,7 +1,5 @@
 package no.difi.asic.api;
 
-import no.difi.asic.lang.AsicException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.PrivateKey;
@@ -12,6 +10,6 @@ import java.security.PrivateKey;
 public interface DecryptionFilter {
 
     InputStream createFilter(InputStream inputStream, Enum<?> algorithm, PrivateKey privateKey)
-            throws IOException, AsicException;
+            throws IOException;
 
 }

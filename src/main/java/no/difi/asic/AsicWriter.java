@@ -39,7 +39,7 @@ public class AsicWriter implements Closeable {
     protected List<KeyStore.PrivateKeyEntry> keyEntries;
 
     protected AsicWriter(OutputStream outputStream, boolean closeStreamOnClose, ConfigurationWrapper configuration)
-            throws IOException, AsicException {
+            throws IOException {
         this.configuration = configuration;
         this.outputStream = outputStream;
         this.closeStreamOnClose = closeStreamOnClose;
@@ -58,23 +58,23 @@ public class AsicWriter implements Closeable {
         container.setRootFile(filename);
     }
 
-    public void add(File file, String filename, MimeType mimeType) throws IOException, AsicException {
+    public void add(File file, String filename, MimeType mimeType) throws IOException {
         add(file.toPath(), filename, mimeType);
     }
 
-    public void add(Path path, String filename, MimeType mimeType) throws IOException, AsicException {
+    public void add(Path path, String filename, MimeType mimeType) throws IOException {
         try (InputStream inputStream = Files.newInputStream(path)) {
             add(inputStream, filename != null ? filename : path.toFile().getName(), mimeType);
         }
     }
 
-    public void add(InputStream inputStream, String filename, MimeType mimeType) throws IOException, AsicException {
+    public void add(InputStream inputStream, String filename, MimeType mimeType) throws IOException {
         try (OutputStream outputStream = add(filename, mimeType)) {
             ByteStreams.copy(inputStream, outputStream);
         }
     }
 
-    public OutputStream add(String filename, MimeType mimeType) throws IOException, AsicException {
+    public OutputStream add(String filename, MimeType mimeType) throws IOException {
         if (signed)
             throw new AsicException("Adding content to container after signing container is not supported.");
 
@@ -85,7 +85,7 @@ public class AsicWriter implements Closeable {
                 mimeType != null ? mimeType : MimeTypes.detect(filename));
     }
 
-    public void sign() throws IOException, AsicException {
+    public void sign() throws IOException {
         configuration.process(Processor.State.BEFORE_SIGNATURE, asicWriterLayer, container);
 
         configuration.getSignature().getSignatureCreator()

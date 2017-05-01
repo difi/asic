@@ -23,7 +23,7 @@ public class CmsEncryptionFilter extends CmsCommons implements EncryptionFilter 
     @Override
     public OutputStream createFilter(OutputStream outputStream, EncryptionAlgorithm algorithm,
                                      List<X509Certificate> certificates)
-            throws IOException, AsicException {
+            throws IOException {
         try {
             // Create envelope data
             CMSEnvelopedDataStreamGenerator streamGenerator = new CMSEnvelopedDataStreamGenerator();

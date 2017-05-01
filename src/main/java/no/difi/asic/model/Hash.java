@@ -29,8 +29,26 @@ public class Hash implements Serializable {
         return hashes.containsKey(algorithm) && Arrays.equals(hashes.get(algorithm), digest);
     }
 
-    public void update(MultiMessageDigest multiMessageDigest) {
-        for (MessageDigestAlgorithm messageDigestAlgorithm : multiMessageDigest.algorithms())
-            set(messageDigestAlgorithm, multiMessageDigest.digest(messageDigestAlgorithm));
+    public boolean update(MultiMessageDigest multiMessageDigest) {
+        for (MessageDigestAlgorithm algorithm : multiMessageDigest.algorithms()) {
+            if (hashes.containsKey(algorithm)
+                    && !Arrays.equals(multiMessageDigest.digest(algorithm), hashes.get(algorithm)))
+                return false;
+
+            set(algorithm, multiMessageDigest.digest(algorithm));
+        }
+
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Hashes:");
+
+        for (MessageDigestAlgorithm algorithm : hashes.keySet())
+            stringBuilder.append("\r\n  ").append(algorithm.getString())
+                    .append(": ").append(Arrays.toString(hashes.get(algorithm)));
+
+        return stringBuilder.toString();
     }
 }

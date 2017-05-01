@@ -18,6 +18,6 @@ public interface AsicReaderBuilder<T> {
      * @return Actual instance.
      * @throws AsicException Thrown in case of invalid states.
      */
-    T build() throws IOException, AsicException;
+    T build() throws IOException;
 
 }

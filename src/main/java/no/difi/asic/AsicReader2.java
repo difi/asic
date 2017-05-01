@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import no.difi.asic.api.AsicReaderLayer;
+import no.difi.asic.api.Supporting;
 import no.difi.asic.config.ConfigurationWrapper;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
@@ -29,8 +30,12 @@ public class AsicReader2 implements Closeable {
 
     private Container container = new Container(Container.Mode.READER);
 
+    private List<Supporting> handlers = new ArrayList<>();
+
     public AsicReader2(InputStream inputStream, ConfigurationWrapper configuration) throws IOException, AsicException {
         this.configuration = configuration;
+
+        handlers.add(configuration.getSignature().getSignatureVerifier());
 
         MultiMessageDigest messageDigest =
                 new MultiMessageDigest(configuration.getSignature().getDataObjectAlgorithm());
@@ -38,7 +43,22 @@ public class AsicReader2 implements Closeable {
     }
 
     public String next() throws IOException, AsicException {
-        return asicReaderLayer.next();
+        String filename = asicReaderLayer.next();
+
+        if (filename != null) {
+            for (Supporting supporting : handlers) {
+                if (supporting.supports(filename)) {
+                    supporting.handle(asicReaderLayer, filename, container);
+                    return next();
+                }
+            }
+        }
+
+        return filename;
+    }
+
+    public InputStream getContent() throws IOException {
+        return asicReaderLayer.getContent();
     }
 
     @Override

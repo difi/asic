@@ -48,8 +48,6 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
 
     private static final String SIGNATURE_FILENAME = "META-INF/signature-%s.p7s";
 
-    private static final String SIGNATURE_MIME_TYPE = "application/x-pkcs7-signature";
-
     @Override
     public boolean supportsRootFile() {
         return true;
@@ -57,8 +55,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
 
     @Override
     public void create(AsicWriterLayer asicWriterLayer, Container container,
-                       List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig)
-            throws IOException, AsicException {
+                       List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig) throws IOException {
         try {
             for (KeyStore.PrivateKeyEntry keyEntry : keyEntries) {
                 // Unique identifier
@@ -93,8 +90,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
     }
 
     private byte[] createManifest(AsicWriterLayer asicWriterLayer, Container container, String identifier,
-                                  SignatureConfig signatureConfig)
-            throws IOException, AsicException {
+                                  SignatureConfig signatureConfig) throws IOException {
         // Reference to signature file.
         SigReferenceType sigReferenceType = OBJECT_FACTORY.createSigReferenceType();
         sigReferenceType.setURI(String.format(SIGNATURE_FILENAME, identifier));
@@ -144,7 +140,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
     }
 
     private void writeSignature(AsicWriterLayer asicWriterLayer, String identifier, CMSSignedData cmsSignedData)
-            throws IOException, AsicException {
+            throws IOException {
         try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.DETACHED_SIGNATURE,
                 String.format(SIGNATURE_FILENAME, identifier), MimeType.forString(SIGNATURE_MIME_TYPE))) {
             ByteStreams.copy(new ByteArrayInputStream(cmsSignedData.getEncoded()), outputStream);

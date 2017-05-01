@@ -1,6 +1,5 @@
 package no.difi.asic;
 
-import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
 import no.difi.asic.model.MimeType;
@@ -31,7 +30,7 @@ class AsicWriterLayer implements no.difi.asic.api.AsicWriterLayer {
 
     @Override
     public OutputStream addContent(DataObject.Type type, final String filename, MimeType mimeType)
-            throws IOException, AsicException {
+            throws IOException {
         container.update(filename, type, mimeType);
 
         asicOutputStream.nextEntry(filename);

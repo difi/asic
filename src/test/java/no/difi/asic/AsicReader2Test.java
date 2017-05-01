@@ -1,6 +1,5 @@
 package no.difi.asic;
 
-import no.difi.asic.lang.AsicException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -15,12 +14,12 @@ public class AsicReader2Test {
     private AsicReaderFactory2 asicReaderFactory;
 
     @BeforeClass
-    public void beforeClass() throws IOException, AsicException {
+    public void beforeClass() throws IOException {
         asicReaderFactory = AsicReaderFactory2.newFactory().build();
     }
 
     @Test
-    public void simple() throws IOException, AsicException {
+    public void simple() throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream("/asic-cades-test-valid.asice");
              AsicReader2 asicReader = asicReaderFactory.open(inputStream).build()) {
 
@@ -28,6 +27,8 @@ public class AsicReader2Test {
             while ((filename = asicReader.next()) != null) {
                 System.out.println(filename);
             }
+
+            System.out.println(asicReader);
         }
     }
 }

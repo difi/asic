@@ -19,14 +19,14 @@ public class AsicWriterTest {
     KeyStore.PrivateKeyEntry keyEntry;
 
     @BeforeClass
-    public void beforeClass() throws IOException, AsicException {
+    public void beforeClass() throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream("/kontaktinfo-client-test.jks")) {
             keyEntry = KeyStoreUtil.load(inputStream, "changeit", "client_alias", "changeit");
         }
     }
 
     @Test
-    public void simple() throws IOException, AsicException {
+    public void simple() throws IOException {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -59,7 +59,7 @@ public class AsicWriterTest {
     }
 
     @Test(expectedExceptions = AsicException.class)
-    public void triggerExceptionWhenAddingMetadataFile() throws IOException, AsicException {
+    public void triggerExceptionWhenAddingMetadataFile() throws IOException {
         AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(Configuration.LEGACY)
                 .signWith(keyEntry)
                 .build();
@@ -74,7 +74,7 @@ public class AsicWriterTest {
     }
 
     @Test(expectedExceptions = AsicException.class)
-    public void triggerExceptionWhenAddingAfterSign() throws IOException, AsicException {
+    public void triggerExceptionWhenAddingAfterSign() throws IOException {
         AsicWriterFactory asicWriterFactory = AsicWriterFactory.newFactory(Configuration.LEGACY)
                 .signWith(keyEntry)
                 .build();

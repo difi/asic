@@ -16,6 +16,6 @@ public interface SignatureCreator {
     boolean supportsRootFile();
 
     void create(AsicWriterLayer asicWriterLayer, Container container, List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig)
-            throws IOException, AsicException;
+            throws IOException;
 
 }

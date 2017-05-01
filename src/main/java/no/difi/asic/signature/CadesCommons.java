@@ -19,6 +19,8 @@ abstract class CadesCommons {
 
     protected static final JAXBContext JAXB_CONTEXT;
 
+    protected static final String SIGNATURE_MIME_TYPE = "application/x-pkcs7-signature";
+
     static {
         try {
             JAXB_CONTEXT = JAXBContext.newInstance(ASiCManifestType.class);

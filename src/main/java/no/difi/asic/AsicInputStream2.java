@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.io.UnclosableInputStream;
 import no.difi.asic.lang.AsicException;
 
 import java.io.ByteArrayOutputStream;
@@ -16,6 +17,8 @@ class AsicInputStream2 extends InputStream {
 
     private ZipInputStream zipInputStream;
 
+    private String currentFilename;
+
     public AsicInputStream2(InputStream inputStream) {
         this.zipInputStream = new ZipInputStream(inputStream);
     }
@@ -25,6 +28,8 @@ class AsicInputStream2 extends InputStream {
 
         if (zipEntry == null)
             return null;
+
+        currentFilename = zipEntry.getName();
 
         // Return filename if file is not the mimetype file.
         if (!"mimetype".equals(zipEntry.getName()))
@@ -39,6 +44,14 @@ class AsicInputStream2 extends InputStream {
 
         // Return next.
         return nextEntry();
+    }
+
+    public String getCurrentFilename() {
+        return currentFilename;
+    }
+
+    public InputStream getContent() {
+        return new UnclosableInputStream(zipInputStream);
     }
 
     public void closeEntry() throws IOException {

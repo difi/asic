@@ -3,6 +3,8 @@ package no.difi.asic.code;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
 /**
+ * https://www.w3.org/TR/xmlsec-algorithms/#aes
+ *
  * @author erlend
  */
 public enum EncryptionAlgorithm {

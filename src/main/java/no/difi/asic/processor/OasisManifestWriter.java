@@ -7,6 +7,7 @@ import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
 import no.difi.asic.model.MimeType;
+import no.difi.asic.util.MimeTypes;
 import no.difi.commons.asic.jaxb.opendocument.manifest.FileEntry;
 import no.difi.commons.asic.jaxb.opendocument.manifest.Manifest;
 
@@ -20,10 +21,8 @@ import java.io.OutputStream;
  */
 public class OasisManifestWriter extends OasisManifestCommons implements WriterProcessor {
 
-    private static final String FILENAME = "META-INF/manifest.xml";
-
     @Override
-    public void perform(AsicWriterLayer asicWriterLayer, Container container) throws IOException, AsicException {
+    public void perform(AsicWriterLayer asicWriterLayer, Container container) throws IOException {
         Manifest manifest = OBJECT_FACTORY.createManifest();
 
         manifest.getFileEntry().add(createFileEntity("/", MimeType.forString(AsicUtils.MIMETYPE_ASICE)));
@@ -31,7 +30,7 @@ public class OasisManifestWriter extends OasisManifestCommons implements WriterP
         for (DataObject dataObject : container.getDataObjects())
             manifest.getFileEntry().add(createFileEntity(dataObject.getFilename(), dataObject.getMimeType()));
 
-        try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.METADATA, FILENAME, MimeType.XML)) {
+        try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.METADATA, FILENAME, MimeTypes.XML)) {
             Marshaller marshaller = JAXB_CONTEXT.createMarshaller();
             marshaller.marshal(manifest, outputStream);
         } catch (JAXBException e) {

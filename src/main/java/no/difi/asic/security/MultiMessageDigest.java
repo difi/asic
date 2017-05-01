@@ -2,6 +2,7 @@ package no.difi.asic.security;
 
 import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.lang.AsicException;
+import no.difi.asic.model.Hash;
 import no.difi.asic.util.BCUtil;
 
 import java.security.MessageDigest;
@@ -40,5 +41,14 @@ public class MultiMessageDigest {
 
     public byte[] digest(MessageDigestAlgorithm algorithm) {
         return messageDigestMap.get(algorithm).digest();
+    }
+
+    public Hash toHash() {
+        Hash hash = new Hash();
+
+        for (MessageDigestAlgorithm algorithm : messageDigestMap.keySet())
+            hash.set(algorithm, messageDigestMap.get(algorithm).digest());
+
+        return hash;
     }
 }

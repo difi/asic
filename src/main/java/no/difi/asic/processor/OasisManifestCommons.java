@@ -11,6 +11,8 @@ import javax.xml.bind.JAXBException;
  */
 public abstract class OasisManifestCommons {
 
+    protected static final String FILENAME = "META-INF/manifest.xml";
+
     protected static final JAXBContext JAXB_CONTEXT;
 
     protected static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
