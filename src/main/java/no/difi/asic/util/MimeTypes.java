@@ -1,7 +1,7 @@
 package no.difi.asic.util;
 
-import no.difi.asic.model.MimeType;
 import no.difi.asic.lang.MimeTypeException;
+import no.difi.asic.model.MimeType;
 
 import java.io.IOException;
 import java.net.FileNameMap;
@@ -30,6 +30,7 @@ public class MimeTypes {
             // Throw exception if content type is not detected
             if (mimeType == null)
                 throw new MimeTypeException(String.format("Unable to determine MIME type of %s", filename));
+
 
             return MimeType.forString(mimeType);
         } catch (IOException e) {

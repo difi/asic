@@ -18,10 +18,14 @@ public class BCUtil {
 
     public static final Provider PROVIDER = new BouncyCastleProvider();
 
+    static {
+        register();
+    }
+
     /**
      * Register Bouncy Castle as Security Provider if not registered.
      */
-    static {
+    protected static void register() {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null)
             Security.addProvider(PROVIDER);
     }

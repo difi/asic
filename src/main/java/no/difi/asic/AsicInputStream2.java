@@ -1,7 +1,6 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
-import no.difi.asic.io.UnclosableInputStream;
 import no.difi.asic.lang.AsicException;
 
 import java.io.ByteArrayOutputStream;
