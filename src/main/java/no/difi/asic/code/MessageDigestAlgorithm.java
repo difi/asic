@@ -23,7 +23,7 @@ public enum MessageDigestAlgorithm {
 
     SHA256("SHA256",
             "http://www.w3.org/2001/04/xmlenc#sha256",
-            "http://www.w3.org/2000/09/xmldsig#sha256"), // TODO Switch URIs
+            "http://www.w3.org/2000/09/xmldsig#sha256"),
 
     SHA384("SHA384",
             "http://www.w3.org/2001/04/xmldsig-more#sha384"),

@@ -14,6 +14,8 @@ import java.nio.file.Paths;
  */
 public class MimeTypes {
 
+    public static final MimeType ASICE = MimeType.forString("application/vnd.etsi.asic-e+zip");
+
     public static final MimeType XML = MimeType.forString("application/xml");
 
     private static FileNameMap fileNameMap = URLConnection.getFileNameMap();
