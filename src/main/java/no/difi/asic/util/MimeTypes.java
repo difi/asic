@@ -21,6 +21,13 @@ public class MimeTypes {
     private static FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
     public static MimeType detect(String filename) throws MimeTypeException {
+        String filenameLower = filename.toLowerCase();
+
+        if (filenameLower.endsWith(".xml"))
+            return XML;
+        else if (filenameLower.endsWith(".asice"))
+            return ASICE;
+
         try {
             // Use Files to find content type
             String mimeType = Files.probeContentType(Paths.get(filename));
@@ -32,7 +39,6 @@ public class MimeTypes {
             // Throw exception if content type is not detected
             if (mimeType == null)
                 throw new MimeTypeException(String.format("Unable to determine MIME type of %s", filename));
-
 
             return MimeType.forString(mimeType);
         } catch (IOException e) {

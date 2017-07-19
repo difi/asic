@@ -20,8 +20,8 @@ public class AsicWriterTest {
 
     @BeforeClass
     public void beforeClass() throws IOException {
-        try (InputStream inputStream = getClass().getResourceAsStream("/kontaktinfo-client-test.jks")) {
-            keyEntry = KeyStoreUtil.load(inputStream, "changeit", "client_alias", "changeit");
+        try (InputStream inputStream = getClass().getResourceAsStream("/keystore.jks")) {
+            keyEntry = KeyStoreUtil.load(inputStream, "changeit", "selfsigned", "changeit");
         }
     }
 
