@@ -3,7 +3,9 @@ package no.difi.asic.signature;
 import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicReaderLayer;
 import no.difi.asic.api.SignatureVerifier;
+import no.difi.asic.builder.Properties;
 import no.difi.asic.model.Container;
+import no.difi.asic.model.FileCache;
 import no.difi.commons.asic.jaxb.cades.XAdESSignaturesType;
 import no.difi.commons.asic.jaxb.xmldsig.SignatureType;
 import no.difi.commons.asic.jaxb.xmldsig.SignedInfoType;
@@ -13,7 +15,6 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -31,7 +32,7 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
 
     @Override
     public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container,
-                       Map<String, byte[]> fileCache) throws IOException {
+                       FileCache fileCache, Properties properties) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ByteStreams.copy(asicReaderLayer.getContent(), byteArrayOutputStream);
 

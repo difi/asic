@@ -39,7 +39,7 @@ class AsicWriterImpl implements AsicWriter {
         this.closeStreamOnClose = closeStreamOnClose;
 
         MultiMessageDigest messageDigest =
-                new MultiMessageDigest(properties.get(AsicWriter.SIGNATURE_OBJECT_ALGORITHM));
+                new MultiMessageDigest(properties.get(Asic.SIGNATURE_OBJECT_ALGORITHM));
         this.asicWriterLayer = new AsicWriterLayerImpl(outputStream, messageDigest, container);
 
         performProcessors(Processor.State.INITIAL);
@@ -59,7 +59,7 @@ class AsicWriterImpl implements AsicWriter {
 
     @Override
     public void setRootFile(String filename) throws AsicException {
-        if (!properties.get(AsicWriter.SIGNATURE_CREATOR).supportsRootFile())
+        if (!properties.get(Asic.SIGNATURE_CREATOR).supportsRootFile())
             throw new AsicException("Root file is not supported with current configuration.");
 
         container.setRootFile(filename);
@@ -69,11 +69,8 @@ class AsicWriterImpl implements AsicWriter {
     public void sign() throws IOException {
         performProcessors(Processor.State.BEFORE_SIGNATURE);
 
-        properties.get(AsicWriter.SIGNATURE_CREATOR)
-                .create(asicWriterLayer, container,
-                        properties.get(AsicWriter.SIGNATURE_CERTIFICATES),
-                        properties.get(AsicWriter.SIGNATURE_OBJECT_ALGORITHM),
-                        properties.get(AsicWriter.SIGNATURE_ALGORITHM));
+        properties.get(Asic.SIGNATURE_CREATOR)
+                .create(asicWriterLayer, container, properties);
 
         signed = true;
 
@@ -93,11 +90,11 @@ class AsicWriterImpl implements AsicWriter {
 
     private void performProcessors(Processor.State state) throws IOException {
         try {
-            properties.get(AsicWriter.PROCESSORS).stream()
+            properties.get(Asic.WRITER_PROCESSORS).stream()
                     .filter(p -> p.getState().equals(state))
                     .forEach(p -> {
                         try {
-                            p.perform(asicWriterLayer, container);
+                            p.perform(asicWriterLayer, container, properties);
                         } catch (IOException e) {
                             throw new UncheckedIOException(e);
                         }

@@ -25,14 +25,6 @@ public class BCUtil {
         PROVIDER = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
     }
 
-    /**
-     * Register Bouncy Castle as Security Provider if not registered.
-     */
-    protected static void register() {
-        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null)
-            Security.addProvider(PROVIDER);
-    }
-
     public static MessageDigest createMessageDigest(MessageDigestAlgorithm algorithm) throws AsicException {
         return createMessageDigest(algorithm.getString());
     }

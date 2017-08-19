@@ -5,6 +5,7 @@ import no.difi.asic.api.AsicReaderLayer;
 import no.difi.asic.api.Supporting;
 import no.difi.asic.builder.Properties;
 import no.difi.asic.model.Container;
+import no.difi.asic.model.FileCache;
 import no.difi.asic.security.MultiMessageDigest;
 
 import java.io.IOException;
@@ -24,16 +25,16 @@ class AsicReaderImpl implements AsicReader {
 
     private List<Supporting> handlers = new ArrayList<>();
 
-    private Map<String, byte[]> fileCache = new HashMap<>();
+    private FileCache fileCache = new FileCache();
 
     public AsicReaderImpl(Properties properties, InputStream inputStream) throws IOException {
         this.properties = properties;
 
-        handlers.add(properties.get(AsicReader.SIGNATURE_VERIFIER));
-        handlers.addAll(properties.get(AsicReader.PROCESSORS));
+        handlers.add(properties.get(Asic.SIGNATURE_VERIFIER));
+        handlers.addAll(properties.get(Asic.READER_PROCESSORS));
 
         MultiMessageDigest messageDigest =
-                new MultiMessageDigest(properties.get(AsicReader.SIGNATURE_OBJECT_ALGORITHM));
+                new MultiMessageDigest(properties.get(Asic.SIGNATURE_OBJECT_ALGORITHM));
         asicReaderLayer = new AsicReaderLayerImpl(inputStream, messageDigest, container);
     }
 
@@ -41,15 +42,15 @@ class AsicReaderImpl implements AsicReader {
         String filename = asicReaderLayer.next();
 
         if (filename == null) {
-            properties.get(AsicReader.SIGNATURE_VERIFIER)
-                    .postHandler(container, fileCache);
+            properties.get(Asic.SIGNATURE_VERIFIER)
+                    .postHandler(container, fileCache, properties);
         } else {
             Optional<Supporting> supporting = handlers.stream()
                     .filter(h -> h.supports(filename))
                     .findFirst();
 
             if (supporting.isPresent()) {
-                supporting.get().handle(asicReaderLayer, filename, container, fileCache);
+                supporting.get().handle(asicReaderLayer, filename, container, fileCache, properties);
                 return next();
             }
         }

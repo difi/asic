@@ -2,7 +2,9 @@ package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicReader;
+import no.difi.asic.api.AsicReaderFactory;
 import no.difi.asic.lang.AsicException;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -18,7 +20,7 @@ public class AsicReaderTest {
 
     @BeforeClass
     public void beforeClass() throws IOException {
-        asicReaderFactory = AsicReaderFactory.legacy().build();
+        asicReaderFactory = Asic.legacyReaderFactoryBuilder().build();
     }
 
     @Test
@@ -66,8 +68,7 @@ public class AsicReaderTest {
 
             String filename;
             while ((filename = asicReader.next()) != null) {
-                System.out.println(filename);
-
+                Assert.assertNotNull(filename);
                 try (InputStream content = asicReader.getContent()) {
                     ByteStreams.copy(content, ByteStreams.nullOutputStream());
                 }

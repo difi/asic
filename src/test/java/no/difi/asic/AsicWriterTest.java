@@ -2,6 +2,7 @@ package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicWriter;
+import no.difi.asic.api.AsicWriterFactory;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.util.KeyStoreUtil;
 import no.difi.asic.util.MimeTypes;
@@ -25,8 +26,8 @@ public class AsicWriterTest {
             keyEntry = KeyStoreUtil.load(inputStream, "changeit", "selfsigned", "changeit");
         }
 
-        asicWriterFactory = AsicWriterFactory.legacy()
-                .set(AsicWriter.SIGNATURE_CERTIFICATES, keyEntry)
+        asicWriterFactory = Asic.legacyWriterFactoryBuilder()
+                .set(Asic.SIGNATURE_CERTIFICATES, keyEntry)
                 .build();
     }
 
@@ -52,7 +53,7 @@ public class AsicWriterTest {
             asicWriter.sign();
         }
 
-        AsicReaderFactory.legacy().build()
+        Asic.legacyReaderFactoryBuilder().build()
                 .verifyContainer(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
 
         // Assert.assertEquals(asicVerifier.getAsicManifest().getFile().size(), 2);

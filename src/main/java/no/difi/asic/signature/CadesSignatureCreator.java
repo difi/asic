@@ -1,13 +1,16 @@
 package no.difi.asic.signature;
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.Asic;
 import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.api.SignatureCreator;
+import no.difi.asic.builder.Properties;
 import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
 import no.difi.asic.model.MimeType;
+import no.difi.asic.util.BCUtil;
 import no.difi.asic.util.MimeTypes;
 import no.difi.commons.asic.jaxb.cades.ASiCManifestType;
 import no.difi.commons.asic.jaxb.cades.DataObjectReferenceType;
@@ -33,7 +36,6 @@ import java.security.KeyStore;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -43,8 +45,8 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
 
     public static SignatureCreator INSTANCE = new CadesSignatureCreator();
 
-    private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder =
-            new JcaDigestCalculatorProviderBuilder().setProvider(PROVIDER);
+    private static final JcaDigestCalculatorProviderBuilder DIGEST_CALCULATOR_PROVIDER_BUILDER =
+            new JcaDigestCalculatorProviderBuilder().setProvider(BCUtil.PROVIDER);
 
     private static final String MANIFEST_FILENAME = "META-INF/ASiCManifest-%s.xml";
 
@@ -56,19 +58,17 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
     }
 
     @Override
-    public void create(AsicWriterLayer asicWriterLayer, Container container, List<KeyStore.PrivateKeyEntry> keyEntries,
-                       MessageDigestAlgorithm objectAlgorithm, MessageDigestAlgorithm signatureAlgorithm)
-            throws IOException {
+    public void create(AsicWriterLayer asicWriterLayer, Container container, Properties properties) throws IOException {
         try {
-            for (KeyStore.PrivateKeyEntry keyEntry : keyEntries) {
+            for (KeyStore.PrivateKeyEntry keyEntry : properties.get(Asic.SIGNATURE_CERTIFICATES)) {
                 // Unique identifier
                 String identifier = UUID.randomUUID().toString();
 
                 JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(
-                        String.format("%swith%s", signatureAlgorithm.getString(),
-                                keyEntry.getPrivateKey().getAlgorithm())).setProvider(PROVIDER);
+                        String.format("%swith%s", properties.get(Asic.SIGNATURE_ALGORITHM).get(0).getString(),
+                                keyEntry.getPrivateKey().getAlgorithm())).setProvider(BCUtil.PROVIDER);
 
-                DigestCalculatorProvider digestCalculatorProvider = jcaDigestCalculatorProviderBuilder.build();
+                DigestCalculatorProvider digestCalculatorProvider = DIGEST_CALCULATOR_PROVIDER_BUILDER.build();
                 ContentSigner contentSigner = jcaContentSignerBuilder.build(keyEntry.getPrivateKey());
                 SignerInfoGenerator signerInfoGenerator = new JcaSignerInfoGeneratorBuilder(digestCalculatorProvider)
                         .build(contentSigner, (X509Certificate) keyEntry.getCertificate());
@@ -79,7 +79,8 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
                         Collections.singletonList(keyEntry.getCertificate())));
 
                 // Create manifest
-                byte[] content = createManifest(asicWriterLayer, container, identifier, objectAlgorithm);
+                byte[] content = createManifest(asicWriterLayer, container, identifier,
+                        properties.get(Asic.SIGNATURE_OBJECT_ALGORITHM).get(0));
 
                 // Create signed data
                 CMSSignedData signedData = dataGenerator.generate(new CMSProcessableByteArray(content), false);

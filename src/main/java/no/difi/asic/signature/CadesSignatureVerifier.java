@@ -3,10 +3,12 @@ package no.difi.asic.signature;
 import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicReaderLayer;
 import no.difi.asic.api.SignatureVerifier;
+import no.difi.asic.builder.Properties;
 import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
+import no.difi.asic.model.FileCache;
 import no.difi.asic.model.MimeType;
 import no.difi.asic.util.BCUtil;
 import no.difi.asic.util.MimeTypes;
@@ -19,7 +21,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.Store;
 
 import javax.xml.bind.JAXBException;
@@ -28,7 +29,6 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -58,7 +58,7 @@ public class CadesSignatureVerifier extends CadesCommons implements SignatureVer
 
     @Override
     public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container,
-                       Map<String, byte[]> fileCache) throws IOException {
+                       FileCache fileCache, Properties properties) throws IOException {
         if (PATTERN_MANIFEST.matcher(filename).matches()) {
             container.update(filename, DataObject.Type.MANIFEST, MimeTypes.XML);
             fileCache.put(filename, ByteStreams.toByteArray(asicReaderLayer.getContent()));
@@ -69,13 +69,14 @@ public class CadesSignatureVerifier extends CadesCommons implements SignatureVer
     }
 
     @Override
-    public void postHandler(Container container, Map<String, byte[]> fileCache) throws IOException {
+    public void postHandler(Container container, FileCache fileCache, Properties properties)
+            throws IOException {
         for (String filename : fileCache.keySet())
             if (PATTERN_MANIFEST.matcher(filename).matches())
                 verifyManifest(filename, container, fileCache);
     }
 
-    private void verifyManifest(String filename, Container container, Map<String, byte[]> fileCache)
+    private void verifyManifest(String filename, Container container, FileCache fileCache)
             throws IOException {
         ASiCManifestType aSiCManifest = parseManifest(fileCache.get(filename));
 

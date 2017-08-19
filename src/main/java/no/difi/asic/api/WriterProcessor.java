@@ -1,6 +1,7 @@
 package no.difi.asic.api;
 
 import no.difi.asic.annotation.Processor;
+import no.difi.asic.builder.Properties;
 import no.difi.asic.model.Container;
 
 import java.io.IOException;
@@ -14,6 +15,6 @@ public interface WriterProcessor {
         return this.getClass().getAnnotation(Processor.class).value();
     }
 
-    void perform(AsicWriterLayer asicWriterLayer, Container container) throws IOException;
+    void perform(AsicWriterLayer asicWriterLayer, Container container, Properties properties) throws IOException;
 
 }

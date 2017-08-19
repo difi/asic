@@ -4,6 +4,7 @@ import no.difi.asic.Asic;
 import no.difi.asic.annotation.Processor;
 import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.api.WriterProcessor;
+import no.difi.asic.builder.Properties;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
@@ -26,7 +27,8 @@ public class OasisManifestWriter extends OasisManifestCommons implements WriterP
     public static WriterProcessor INSTANCE = new OasisManifestWriter();
 
     @Override
-    public void perform(AsicWriterLayer asicWriterLayer, Container container) throws IOException {
+    public void perform(AsicWriterLayer asicWriterLayer, Container container, Properties properties)
+            throws IOException {
         Manifest manifest = OBJECT_FACTORY.createManifest();
 
         manifest.getFileEntry().add(createFileEntity("/", MimeType.forString(Asic.MIMETYPE_ASICE)));

@@ -15,10 +15,10 @@ abstract class XadesCommons {
 
     protected static final JAXBContext JAXB_CONTEXT;
 
-    protected static ObjectFactory objectFactory1_2 = new ObjectFactory();
+    protected static final ObjectFactory OBJECT_FACTORY_XADES = new ObjectFactory();
 
-    protected static no.difi.commons.asic.jaxb.cades.ObjectFactory objectFactory1_3 = new no.difi.commons.asic.jaxb.cades.ObjectFactory();
-
+    protected static final no.difi.commons.asic.jaxb.cades.ObjectFactory OBJECT_FACTORY_CADES =
+            new no.difi.commons.asic.jaxb.cades.ObjectFactory();
 
     static {
         try {

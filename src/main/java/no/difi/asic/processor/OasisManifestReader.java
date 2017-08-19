@@ -2,8 +2,10 @@ package no.difi.asic.processor;
 
 import no.difi.asic.api.AsicReaderLayer;
 import no.difi.asic.api.ReaderProcessor;
+import no.difi.asic.builder.Properties;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
+import no.difi.asic.model.FileCache;
 import no.difi.asic.util.MimeTypes;
 
 import java.io.IOException;
@@ -22,8 +24,10 @@ public class OasisManifestReader extends OasisManifestCommons implements ReaderP
     }
 
     @Override
-    public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container
-            , Map<String, byte[]> fileCache) throws IOException {
+    public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container,
+                       FileCache fileCache, Properties properties) throws IOException {
         container.update(filename, DataObject.Type.METADATA, MimeTypes.XML);
+
+        // No reason to use further resources on verification of content.
     }
 }

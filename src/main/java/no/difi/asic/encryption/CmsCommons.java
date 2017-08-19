@@ -7,7 +7,7 @@ import java.security.Provider;
 /**
  * @author erlend
  */
-public abstract class CmsCommons {
+abstract class CmsCommons {
 
     protected static final Provider PROVIDER = BCUtil.PROVIDER;
 

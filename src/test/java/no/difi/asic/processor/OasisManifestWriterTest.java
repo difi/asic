@@ -1,7 +1,6 @@
 package no.difi.asic.processor;
 
 import no.difi.asic.api.WriterProcessor;
-import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
 import no.difi.asic.test.TestWriterLayer;
@@ -21,14 +20,14 @@ public class OasisManifestWriterTest {
     private WriterProcessor writerProcessor = new OasisManifestWriter();
 
     @Test
-    public void simple() throws IOException, AsicException {
+    public void simple() throws IOException {
         TestWriterLayer writerLayer = new TestWriterLayer();
 
         Container container = new Container(Container.Mode.WRITER);
         container.update("file_1.xml", DataObject.Type.DATA, MimeTypes.XML);
         container.update("file_2.xml", DataObject.Type.DATA, MimeTypes.XML);
 
-        writerProcessor.perform(writerLayer, container);
+        writerProcessor.perform(writerLayer, container, null);
 
         List<String> writtenFiles = new ArrayList<>(writerLayer.getFiles());
 

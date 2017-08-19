@@ -9,7 +9,7 @@ import javax.xml.bind.JAXBException;
 /**
  * @author erlend
  */
-public abstract class OasisManifestCommons {
+abstract class OasisManifestCommons {
 
     protected static final String FILENAME = "META-INF/manifest.xml";
 

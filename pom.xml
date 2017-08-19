@@ -67,42 +67,21 @@
 
     <dependencies>
 
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Commons -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Bouncy Castle is used for creating and verifying signatures -->
+        <!-- Bouncy Castle -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
             <version>1.57</version>
         </dependency>
 
-        <!-- Google -->
+        <!-- Google Guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>23.0</version>
         </dependency>
 
-        <!-- TestNG testing framework -->
+        <!-- Testing -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -138,14 +117,9 @@
                 <version>2.18.1</version>
                 <configuration>
                     <failIfNoTests>true</failIfNoTests>
-                    <!-- Seems this will alleviate the problem of out-of-memory -->
-                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
             <plugin>
-                <!-- JAXB plugin generates Java classes corresponding to the XML Schema Definitions found in this project -->
-                <!-- See  https://github.com/highsource/maven-jaxb2-plugin -->
-                <!-- Documentation at https://github.com/highsource/maven-jaxb2-plugin/wiki -->
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
                 <version>0.12.3</version>
@@ -158,8 +132,6 @@
                         <configuration>
                             <schemaDirectory>src/main/xsd</schemaDirectory>
                             <bindingDirectory>src/main/xjb</bindingDirectory>
-                            <!-- If you want to generate the classes into a different directory than the default, this is how you do it. -->
-                            <!-- <generateDirectory>${project.build.directory}/generated-sources/xjc-xsd</generateDirectory> -->
                         </configuration>
                     </execution>
                 </executions>
