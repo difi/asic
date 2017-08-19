@@ -1,50 +1,58 @@
 package no.difi.asic.api;
 
-import no.difi.commons.asic.jaxb.asic.AsicManifest;
+import com.google.common.io.ByteStreams;
+import no.difi.asic.builder.Property;
+import no.difi.asic.code.EncryptionAlgorithm;
+import no.difi.asic.code.MessageDigestAlgorithm;
+import no.difi.asic.processor.OasisManifestReader;
+import no.difi.asic.signature.CadesSignatureVerifier;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyStore;
+import java.util.List;
 
+/**
+ * @author erlend
+ */
 public interface AsicReader extends Closeable {
 
-    /**
-     * Provides the name of the next entry in the ASiC archive and positions the inputstream at the beginning of the data.
-     *
-     * @return name of next entry in archive.
-     * @throws IOException
-     */
-    String getNextFile() throws IOException;
+    Property<List<KeyStore.PrivateKeyEntry>> DECRYPTION_CERTIFICATES = Property.create();
 
-    /**
-     * Writes the contents of the current entry into a file
-     *
-     * @param file into which the contents should be written.
-     * @throws IOException
-     */
-    void writeFile(File file) throws IOException;
+    Property<EncryptionAlgorithm> DECRYPTION_ALGORITHM =
+            Property.create(EncryptionAlgorithm.AES256_GCM);
 
-    /**
-     * Writes contents of current archive entry into a file.
-     *
-     * @param path into which the contents of current entry should be written.
-     * @throws IOException
-     */
-    void writeFile(Path path) throws IOException;
+    Property<List<MessageDigestAlgorithm>> SIGNATURE_OBJECT_ALGORITHM =
+            Property.createList(MessageDigestAlgorithm.SHA256);
 
-    /**
-     * Writes contents of current archive entry to the supplied output stream.
-     *
-     * @param outputStream into which data from current entry should be written.
-     * @throws IOException
-     */
-    void writeFile(OutputStream outputStream) throws IOException;
+    Property<MessageDigestAlgorithm> SIGNATURE_ALGORITHM =
+            Property.create(MessageDigestAlgorithm.SHA256);
 
-    /**
-     * Returns InputStream to read the content.
-     *
-     * @return Content
-     */
-    InputStream inputStream() throws IOException;
+    Property<SignatureVerifier> SIGNATURE_VERIFIER =
+            Property.create(CadesSignatureVerifier.INSTANCE);
 
-    AsicManifest getAsicManifest();
+    Property<List<ReaderProcessor>> PROCESSORS = Property.createList(OasisManifestReader.INSTANCE);
+
+
+
+    String next() throws IOException;
+
+    InputStream getContent() throws IOException;
+
+    default void writeTo(File file) throws IOException {
+        writeTo(file.toPath());
+    }
+
+    default void writeTo(Path path) throws IOException {
+        try (OutputStream outputStream = Files.newOutputStream(path)) {
+            writeTo(outputStream);
+        }
+    }
+
+    default void writeTo(OutputStream outputStream) throws IOException {
+        try (InputStream inputStream = getContent()) {
+            ByteStreams.copy(inputStream, outputStream);
+        }
+    }
 }

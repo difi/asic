@@ -16,10 +16,13 @@ import java.util.Map;
  */
 public class BCUtil {
 
-    public static final Provider PROVIDER = new BouncyCastleProvider();
+    public static final Provider PROVIDER;
 
     static {
-        register();
+        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null)
+            Security.addProvider(new BouncyCastleProvider());
+
+        PROVIDER = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
     }
 
     /**

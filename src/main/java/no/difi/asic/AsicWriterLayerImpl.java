@@ -13,7 +13,7 @@ import java.io.OutputStream;
 /**
  * @author erlend
  */
-class AsicWriterLayer implements no.difi.asic.api.AsicWriterLayer {
+class AsicWriterLayerImpl implements no.difi.asic.api.AsicWriterLayer {
 
     private AsicOutputStream asicOutputStream;
 
@@ -21,7 +21,7 @@ class AsicWriterLayer implements no.difi.asic.api.AsicWriterLayer {
 
     private Container container;
 
-    public AsicWriterLayer(OutputStream outputStream, MultiMessageDigest messageDigest, Container container)
+    public AsicWriterLayerImpl(OutputStream outputStream, MultiMessageDigest messageDigest, Container container)
             throws IOException {
         this.asicOutputStream = new AsicOutputStream(outputStream);
         this.messageDigest = messageDigest;

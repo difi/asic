@@ -15,8 +15,6 @@ import java.util.zip.ZipOutputStream;
  */
 class AsicOutputStream extends OutputStream {
 
-    public static final String APPLICATION_VND_ETSI_ASIC_E_ZIP = "application/vnd.etsi.asic-e+zip";
-
     private ZipOutputStream zipOutputStream;
 
     public AsicOutputStream(OutputStream outputStream) throws IOException {
@@ -24,11 +22,11 @@ class AsicOutputStream extends OutputStream {
         zipOutputStream = new ZipOutputStream(outputStream);
 
         // Write comment
-        zipOutputStream.setComment("mimetype=" + APPLICATION_VND_ETSI_ASIC_E_ZIP);
+        zipOutputStream.setComment("mimetype=" + Asic.MIMETYPE_ASICE);
 
         // Write "mimetype" file
         zipOutputStream.putNextEntry(new ZipEntry("mimetype"));
-        ByteStreams.copy(new ByteArrayInputStream(APPLICATION_VND_ETSI_ASIC_E_ZIP.getBytes()), zipOutputStream);
+        ByteStreams.copy(new ByteArrayInputStream(Asic.MIMETYPE_ASICE.getBytes()), zipOutputStream);
         zipOutputStream.closeEntry();
     }
 

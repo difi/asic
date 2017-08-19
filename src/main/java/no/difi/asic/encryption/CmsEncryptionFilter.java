@@ -20,6 +20,8 @@ import java.util.List;
  */
 public class CmsEncryptionFilter extends CmsCommons implements EncryptionFilter {
 
+    public static final EncryptionFilter INSTANCE = new CmsEncryptionFilter();
+
     @Override
     public OutputStream createFilter(OutputStream outputStream, EncryptionAlgorithm algorithm,
                                      List<X509Certificate> certificates)

@@ -7,11 +7,14 @@ import no.difi.asic.model.DataObject;
 import no.difi.asic.util.MimeTypes;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author erlend
  */
 public class OasisManifestReader extends OasisManifestCommons implements ReaderProcessor {
+
+    public static final ReaderProcessor INSTANCE = new OasisManifestReader();
 
     @Override
     public boolean supports(String filename) {
@@ -19,7 +22,8 @@ public class OasisManifestReader extends OasisManifestCommons implements ReaderP
     }
 
     @Override
-    public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container) throws IOException {
+    public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container
+            , Map<String, byte[]> fileCache) throws IOException {
         container.update(filename, DataObject.Type.METADATA, MimeTypes.XML);
     }
 }

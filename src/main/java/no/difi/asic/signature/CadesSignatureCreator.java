@@ -3,7 +3,7 @@ package no.difi.asic.signature;
 import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.api.SignatureCreator;
-import no.difi.asic.config.SignatureConfig;
+import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
@@ -41,6 +41,8 @@ import java.util.UUID;
  */
 public class CadesSignatureCreator extends CadesCommons implements SignatureCreator {
 
+    public static SignatureCreator INSTANCE = new CadesSignatureCreator();
+
     private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder =
             new JcaDigestCalculatorProviderBuilder().setProvider(PROVIDER);
 
@@ -54,15 +56,16 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
     }
 
     @Override
-    public void create(AsicWriterLayer asicWriterLayer, Container container,
-                       List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig) throws IOException {
+    public void create(AsicWriterLayer asicWriterLayer, Container container, List<KeyStore.PrivateKeyEntry> keyEntries,
+                       MessageDigestAlgorithm objectAlgorithm, MessageDigestAlgorithm signatureAlgorithm)
+            throws IOException {
         try {
             for (KeyStore.PrivateKeyEntry keyEntry : keyEntries) {
                 // Unique identifier
                 String identifier = UUID.randomUUID().toString();
 
                 JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(
-                        String.format("%swith%s", signatureConfig.getSignatureAlgorithm().getString(),
+                        String.format("%swith%s", signatureAlgorithm.getString(),
                                 keyEntry.getPrivateKey().getAlgorithm())).setProvider(PROVIDER);
 
                 DigestCalculatorProvider digestCalculatorProvider = jcaDigestCalculatorProviderBuilder.build();
@@ -76,7 +79,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
                         Collections.singletonList(keyEntry.getCertificate())));
 
                 // Create manifest
-                byte[] content = createManifest(asicWriterLayer, container, identifier, signatureConfig);
+                byte[] content = createManifest(asicWriterLayer, container, identifier, objectAlgorithm);
 
                 // Create signed data
                 CMSSignedData signedData = dataGenerator.generate(new CMSProcessableByteArray(content), false);
@@ -90,7 +93,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
     }
 
     private byte[] createManifest(AsicWriterLayer asicWriterLayer, Container container, String identifier,
-                                  SignatureConfig signatureConfig) throws IOException {
+                                  MessageDigestAlgorithm objectAlgorithm) throws IOException {
         // Reference to signature file.
         SigReferenceType sigReferenceType = OBJECT_FACTORY.createSigReferenceType();
         sigReferenceType.setURI(String.format(SIGNATURE_FILENAME, identifier));
@@ -101,7 +104,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
         aSiCManifestType.setSigReference(sigReferenceType);
 
         DigestMethodType digestMethodType = new DigestMethodType();
-        digestMethodType.setAlgorithm(signatureConfig.getDataObjectAlgorithm()[0].getURI());
+        digestMethodType.setAlgorithm(objectAlgorithm.getURI());
 
         // Add DataObjects
         for (DataObject dataObject : container.getDataObjects()) {
@@ -109,7 +112,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
             dataObjectReferenceType.setURI(dataObject.getFilename());
             dataObjectReferenceType.setMimeType(dataObject.getMimeType().getValue());
             dataObjectReferenceType.setDigestValue(dataObject.getHash()
-                    .get(signatureConfig.getDataObjectAlgorithm()[0]));
+                    .get(objectAlgorithm));
             dataObjectReferenceType.setDigestMethod(digestMethodType);
 
             if (dataObject.getFilename().equals(container.getRootFile()))

@@ -6,6 +6,7 @@ import no.difi.asic.model.Hash;
 import no.difi.asic.util.BCUtil;
 
 import java.security.MessageDigest;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,6 +19,10 @@ public class MultiMessageDigest {
 
     public MultiMessageDigest(MessageDigestAlgorithm... messageDigestAlgorithms) throws AsicException {
         this.messageDigestMap = BCUtil.createMessageDigests(messageDigestAlgorithms);
+    }
+
+    public MultiMessageDigest(List<MessageDigestAlgorithm> messageDigestAlgorithms) throws AsicException {
+        this(messageDigestAlgorithms.toArray(new MessageDigestAlgorithm[messageDigestAlgorithms.size()]));
     }
 
     public void reset() {

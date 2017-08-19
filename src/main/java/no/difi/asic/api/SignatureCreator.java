@@ -1,6 +1,6 @@
 package no.difi.asic.api;
 
-import no.difi.asic.config.SignatureConfig;
+import no.difi.asic.code.MessageDigestAlgorithm;
 import no.difi.asic.model.Container;
 
 import java.io.IOException;
@@ -20,7 +20,8 @@ public interface SignatureCreator {
     }
     */
 
-    void create(AsicWriterLayer asicWriterLayer, Container container, List<KeyStore.PrivateKeyEntry> keyEntries, SignatureConfig signatureConfig)
+    void create(AsicWriterLayer asicWriterLayer, Container container, List<KeyStore.PrivateKeyEntry> keyEntries,
+                MessageDigestAlgorithm objectAlgorithm, MessageDigestAlgorithm signatureAlgorithm)
             throws IOException;
 
 }

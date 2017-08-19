@@ -1,42 +1,35 @@
 package no.difi.asic;
 
-import no.difi.asic.api.AsicWriterBuilder;
-import no.difi.asic.config.ConfigurationWrapper;
-import no.difi.asic.lang.AsicException;
+import no.difi.asic.api.AsicWriter;
+import no.difi.asic.builder.Builder;
+import no.difi.asic.builder.Properties;
+import no.difi.asic.code.MessageDigestAlgorithm;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.KeyStore;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author erlend
  */
 public class AsicWriterFactory {
 
-    protected ConfigurationWrapper configuration;
+    protected Properties properties;
 
-    protected List<X509Certificate> certificates;
-
-    protected List<KeyStore.PrivateKeyEntry> keyEntries;
-
-    public static AsicWriterBuilder<AsicWriterFactory> newFactory() throws AsicException {
-        return newFactory(Configuration.LEGACY);
+    public static Builder<AsicWriterFactory> builder() {
+        return new Builder<>(AsicWriterFactory::new);
     }
 
-    public static AsicWriterBuilder<AsicWriterFactory> newFactory(Enum configuration) throws AsicException {
-        return new AsicWriterFactoryBuilder(configuration);
+    public static Builder<AsicWriterFactory> legacy() {
+        return builder()
+                .set(AsicWriter.SIGNATURE_ALGORITHM, MessageDigestAlgorithm.SHA1);
     }
 
-    protected AsicWriterFactory(AsicWriterFactoryBuilder builder) throws AsicException {
-        this.configuration = new ConfigurationWrapper(builder.configuration);
-        this.certificates = Collections.unmodifiableList(builder.certificates);
-        this.keyEntries = Collections.unmodifiableList(builder.keyEntries);
+    protected AsicWriterFactory(Properties properties) {
+        this.properties = properties;
     }
 
     /**
@@ -45,46 +38,47 @@ public class AsicWriterFactory {
      *
      * @param outputDir the directory in which the archive will be created.
      * @param filename  the name of the archive.
-     * @return an instance of AsicWriterOld
+     * @return an instance of AsicWriterImpl
      */
-    public AsicWriterBuilder<AsicWriter> newContainer(File outputDir, String filename) throws IOException, AsicException {
+    public Builder<AsicWriter> newContainer(File outputDir, String filename) throws IOException {
         return newContainer(new File(outputDir, filename));
     }
 
     /**
-     * Creates a new AsicWriterOld, which will create an ASiC archive in the supplied file.
+     * Creates a new AsicWriterImpl, which will create an ASiC archive in the supplied file.
      *
      * @param file the file reference to the archive.
-     * @return an instance of AsicWriterOld
+     * @return an instance of AsicWriterImpl
      */
-    public AsicWriterBuilder<AsicWriter> newContainer(File file) throws IOException, AsicException {
+    public Builder<AsicWriter> newContainer(File file) throws IOException {
         return newContainer(file.toPath());
     }
 
     /**
      * @see #newContainer(File)
      */
-    public AsicWriterBuilder<AsicWriter> newContainer(Path path) throws IOException, AsicException {
+    public Builder<AsicWriter> newContainer(Path path) throws IOException {
         return newContainer(Files.newOutputStream(path), true);
     }
 
     /**
-     * Creates a new AsicWriterOld, which will createFilter the container contents to the supplied output stream.
+     * Creates a new AsicWriterImpl, which will createFilter the container contents to the supplied output stream.
      *
      * @param outputStream stream into which the archive will be written.
-     * @return an instance of AsicWriterOld
+     * @return an instance of AsicWriterImpl
      */
-    public AsicWriterBuilder<AsicWriter> newContainer(OutputStream outputStream) throws IOException, AsicException {
+    public Builder<AsicWriter> newContainer(OutputStream outputStream) throws IOException {
         return newContainer(outputStream, false);
     }
 
-    private AsicWriterBuilder<AsicWriter> newContainer(OutputStream outputStream, boolean closeStreamOnClose)
-            throws IOException, AsicException {
-        AsicWriterBuilderImpl asicWriterBuilder = new AsicWriterBuilderImpl();
-        asicWriterBuilder.asicWriterFactory = this;
-        asicWriterBuilder.outputStream = outputStream;
-        asicWriterBuilder.closeStreamOnClose = closeStreamOnClose;
-
-        return asicWriterBuilder;
+    private Builder<AsicWriter> newContainer(final OutputStream outputStream, final boolean closeStreamOnClose)
+            throws IOException {
+        return new Builder<>(properties, properties -> {
+            try {
+                return new AsicWriterImpl(properties, outputStream, closeStreamOnClose);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        });
     }
 }

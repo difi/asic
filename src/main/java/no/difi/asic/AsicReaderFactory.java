@@ -1,40 +1,53 @@
 package no.difi.asic;
 
+import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicReader;
+import no.difi.asic.builder.Builder;
+import no.difi.asic.builder.Properties;
 import no.difi.asic.code.MessageDigestAlgorithm;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.UncheckedIOException;
 
-@Deprecated
+/**
+ * @author erlend
+ */
 public class AsicReaderFactory {
 
-    public static AsicReaderFactory newFactory() {
-        return newFactory(MessageDigestAlgorithm.SHA256);
+    private Properties properties;
+
+    public static Builder<AsicReaderFactory> builder() {
+        return new Builder<>(AsicReaderFactory::new);
     }
 
-    static AsicReaderFactory newFactory(MessageDigestAlgorithm messageDigestAlgorithm) {
-        return new AsicReaderFactory(messageDigestAlgorithm);
+    public static Builder<AsicReaderFactory> legacy() {
+        return builder()
+                .set(AsicReader.SIGNATURE_ALGORITHM, MessageDigestAlgorithm.SHA1);
     }
 
-    private MessageDigestAlgorithm messageDigestAlgorithm;
-
-    private AsicReaderFactory(MessageDigestAlgorithm messageDigestAlgorithm) {
-        this.messageDigestAlgorithm = messageDigestAlgorithm;
+    protected AsicReaderFactory(Properties properties) {
+        this.properties = properties;
     }
 
-    public AsicReader open(File file) throws IOException {
-        return open(file.toPath());
+    public Builder<AsicReader> openContainer(InputStream inputStream) throws IOException {
+        try {
+            return new Builder<>(properties, properties -> {
+                try {
+                    return new AsicReaderImpl(properties, inputStream);
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            });
+        } catch (UncheckedIOException e) {
+            throw e.getCause();
+        }
     }
 
-    public AsicReader open(Path file) throws IOException {
-        return open(Files.newInputStream(file));
-    }
-
-    public AsicReader open(InputStream inputStream) throws IOException {
-        return new AsicReaderImpl(messageDigestAlgorithm, inputStream);
+    public void verifyContainer(InputStream inputStream) throws IOException {
+        try (AsicReader asicReaderInner = openContainer(inputStream).build()) {
+            while (asicReaderInner.next() != null)
+                asicReaderInner.writeTo(ByteStreams.nullOutputStream());
+        }
     }
 }

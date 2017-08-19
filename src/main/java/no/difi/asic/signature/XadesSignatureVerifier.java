@@ -13,6 +13,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -29,7 +30,8 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
     }
 
     @Override
-    public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container) throws IOException {
+    public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container,
+                       Map<String, byte[]> fileCache) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ByteStreams.copy(asicReaderLayer.getContent(), byteArrayOutputStream);
 

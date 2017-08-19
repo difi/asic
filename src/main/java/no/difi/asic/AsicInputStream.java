@@ -1,6 +1,7 @@
 package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
+import no.difi.asic.lang.AsicException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,28 +9,61 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-@Deprecated
-class AsicInputStream extends ZipInputStream {
+/**
+ * @author erlend
+ */
+class AsicInputStream extends InputStream {
 
-    public AsicInputStream(InputStream in) {
-        super(in);
+    private ZipInputStream zipInputStream;
+
+    private String currentFilename;
+
+    public AsicInputStream(InputStream inputStream) {
+        this.zipInputStream = new ZipInputStream(inputStream);
+    }
+
+    public String nextEntry() throws IOException {
+        ZipEntry zipEntry = zipInputStream.getNextEntry();
+
+        if (zipEntry == null)
+            return null;
+
+        currentFilename = zipEntry.getName();
+
+        // Return filename if file is not the mimetype file.
+        if (!"mimetype".equals(zipEntry.getName()))
+            return zipEntry.getName();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ByteStreams.copy(zipInputStream, byteArrayOutputStream);
+        closeEntry();
+
+        if (!byteArrayOutputStream.toString().equals(Asic.MIMETYPE_ASICE))
+            throw new AsicException(String.format("Detected invalid mimetype '%s'.", byteArrayOutputStream.toString()));
+
+        // Return next.
+        return nextEntry();
+    }
+
+    public String getCurrentFilename() {
+        return currentFilename;
+    }
+
+    public InputStream getContent() {
+        return zipInputStream;
+    }
+
+    public void closeEntry() throws IOException {
+        zipInputStream.closeEntry();
     }
 
     @Override
-    public ZipEntry getNextEntry() throws IOException {
-        ZipEntry zipEntry = super.getNextEntry();
+    public int read() throws IOException {
+        return zipInputStream.read();
+    }
 
-        if (zipEntry != null && zipEntry.getName().equals("mimetype")) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ByteStreams.copy(this, baos);
-
-            if (!AsicUtils.MIMETYPE_ASICE.equals(baos.toString()))
-                throw new IllegalStateException("Content is not ASiC-E container.");
-
-            // Fetch next
-            zipEntry = super.getNextEntry();
-        }
-
-        return zipEntry;
+    @Override
+    public void close() throws IOException {
+        zipInputStream.close();
     }
 }

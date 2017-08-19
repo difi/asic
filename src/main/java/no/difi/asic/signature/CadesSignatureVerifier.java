@@ -8,16 +8,27 @@ import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
 import no.difi.asic.model.DataObject;
 import no.difi.asic.model.MimeType;
+import no.difi.asic.util.BCUtil;
 import no.difi.asic.util.MimeTypes;
 import no.difi.commons.asic.jaxb.cades.ASiCManifestType;
 import no.difi.commons.asic.jaxb.cades.DataObjectReferenceType;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cms.CMSProcessableByteArray;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.Store;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.cert.X509Certificate;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -25,11 +36,20 @@ import java.util.regex.Pattern;
  */
 public class CadesSignatureVerifier extends CadesCommons implements SignatureVerifier {
 
+    public static SignatureVerifier INSTANCE = new CadesSignatureVerifier();
+
     protected static final Pattern PATTERN_MANIFEST =
             Pattern.compile("META-INF/asicmanifest(.*)\\.xml", Pattern.CASE_INSENSITIVE);
 
-    static final Pattern PATTERN_SIGNATURE =
+    protected static final Pattern PATTERN_SIGNATURE =
             Pattern.compile("META-INF/signature(.*)\\.p7s", Pattern.CASE_INSENSITIVE);
+
+    private static final JcaSimpleSignerInfoVerifierBuilder SIGNER_INFO_VERIFIER_BUILDER =
+            new JcaSimpleSignerInfoVerifierBuilder().setProvider(BCUtil.PROVIDER);
+
+    private static final JcaX509CertificateConverter CERTIFICATE_CONVERTER =
+            new JcaX509CertificateConverter().setProvider(BCUtil.PROVIDER);
+
 
     @Override
     public boolean supports(String filename) {
@@ -37,43 +57,81 @@ public class CadesSignatureVerifier extends CadesCommons implements SignatureVer
     }
 
     @Override
-    public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container)
-            throws IOException {
+    public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container,
+                       Map<String, byte[]> fileCache) throws IOException {
         if (PATTERN_MANIFEST.matcher(filename).matches()) {
-            // Parse manifest
             container.update(filename, DataObject.Type.MANIFEST, MimeTypes.XML);
-
-            ASiCManifestType aSiCManifest;
-
-            try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ByteStreams.copy(asicReaderLayer.getContent(), baos);
-
-                String xml = baos.toString()
-                        .replace("http://uri.etsi.org/02918/v1.1.1#", "http://uri.etsi.org/02918/v1.2.1#")
-                        .replace("http://uri.etsi.org/2918/v1.2.1#", "http://uri.etsi.org/02918/v1.2.1#");
-
-                Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
-                aSiCManifest = unmarshaller.unmarshal(
-                        new StreamSource(new ByteArrayInputStream(xml.getBytes())), ASiCManifestType.class).getValue();
-            } catch (JAXBException e) {
-                throw new AsicException(e.getMessage(), e);
-            }
-
-            for (DataObjectReferenceType reference : aSiCManifest.getDataObjectReference()) {
-                container.update(reference.getURI(), DataObject.Type.DATA,
-                        MimeType.forString(reference.getMimeType()));
-
-                container.verify(null, reference.getURI(),
-                        MessageDigestAlgorithm.findByUri(reference.getDigestMethod().getAlgorithm()),
-                        reference.getDigestValue());
-
-                if (reference.isRootfile() != null && reference.isRootfile())
-                    container.setRootFile(reference.getURI());
-            }
+            fileCache.put(filename, ByteStreams.toByteArray(asicReaderLayer.getContent()));
         } else {
             container.update(filename, DataObject.Type.DETACHED_SIGNATURE, MimeType.forString(SIGNATURE_MIME_TYPE));
-            // Validate signature
+            fileCache.put(filename, ByteStreams.toByteArray(asicReaderLayer.getContent()));
+        }
+    }
+
+    @Override
+    public void postHandler(Container container, Map<String, byte[]> fileCache) throws IOException {
+        for (String filename : fileCache.keySet())
+            if (PATTERN_MANIFEST.matcher(filename).matches())
+                verifyManifest(filename, container, fileCache);
+    }
+
+    private void verifyManifest(String filename, Container container, Map<String, byte[]> fileCache)
+            throws IOException {
+        ASiCManifestType aSiCManifest = parseManifest(fileCache.get(filename));
+
+        // Verify signature.
+        String sigReference = aSiCManifest.getSigReference().getURI();
+
+        if (!fileCache.containsKey(sigReference))
+            throw new AsicException(String.format("Unable to find signature file '%s'.", sigReference));
+
+        X509Certificate certificate = validate(fileCache.get(filename), fileCache.get(sigReference));
+
+        // Verify data objects.
+        for (DataObjectReferenceType reference : aSiCManifest.getDataObjectReference()) {
+            container.update(reference.getURI(), DataObject.Type.DATA,
+                    MimeType.forString(reference.getMimeType()));
+
+            container.verify(null, reference.getURI(),
+                    MessageDigestAlgorithm.findByUri(reference.getDigestMethod().getAlgorithm()),
+                    reference.getDigestValue());
+
+            if (reference.isRootfile() != null && reference.isRootfile())
+                container.setRootFile(reference.getURI());
+        }
+    }
+
+    private X509Certificate validate(byte[] data, byte[] signature) throws AsicException {
+        try {
+            CMSSignedData cmsSignedData = new CMSSignedData(new CMSProcessableByteArray(data), signature);
+            Store store = cmsSignedData.getCertificates();
+            SignerInformationStore signerInformationStore = cmsSignedData.getSignerInfos();
+
+            for (SignerInformation signerInformation : signerInformationStore.getSigners()) {
+                X509CertificateHolder x509Certificate = (X509CertificateHolder) store.getMatches(signerInformation.getSID()).iterator().next();
+
+                if (signerInformation.verify(SIGNER_INFO_VERIFIER_BUILDER.build(x509Certificate)))
+                    return CERTIFICATE_CONVERTER.getCertificate(x509Certificate);
+            }
+
+            throw new AsicException("Unable to find valid certificate to verify signature.");
+        } catch (Exception e) {
+            throw new AsicException("Unable to verify signature.", e);
+        }
+    }
+
+    private ASiCManifestType parseManifest(byte[] bytes) throws AsicException {
+        try {
+            String xml = new String(bytes)
+                    .replace("http://uri.etsi.org/02918/v1.1.1#", "http://uri.etsi.org/02918/v1.2.1#")
+                    .replace("http://uri.etsi.org/2918/v1.2.1#", "http://uri.etsi.org/02918/v1.2.1#");
+
+            Unmarshaller unmarshaller = JAXB_CONTEXT.createUnmarshaller();
+            return unmarshaller
+                    .unmarshal(new StreamSource(new ByteArrayInputStream(xml.getBytes())), ASiCManifestType.class)
+                    .getValue();
+        } catch (JAXBException e) {
+            throw new AsicException(e.getMessage(), e);
         }
     }
 }

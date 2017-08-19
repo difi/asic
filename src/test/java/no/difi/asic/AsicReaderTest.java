@@ -2,58 +2,76 @@ package no.difi.asic;
 
 import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicReader;
-import org.testng.Assert;
+import no.difi.asic.lang.AsicException;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Testing functionality.
+ * @author erlend
  */
 public class AsicReaderTest {
 
-    private AsicReaderFactory asicReaderFactory = AsicReaderFactory.newFactory();
+    private AsicReaderFactory asicReaderFactory;
 
-    @Test
-    public void readingContentWithWriteFile() throws IOException {
-        // Testing using AsicReader::writeFile.
-        AsicReader asicReader = asicReaderFactory.open(getClass().getResourceAsStream("/asic-cades-test-valid.asice"));
-        while (asicReader.getNextFile() != null)
-            asicReader.writeFile(ByteStreams.nullOutputStream());
-        asicReader.close();
-        Assert.assertEquals(1, asicReader.getAsicManifest().getCertificate().size());
+    @BeforeClass
+    public void beforeClass() throws IOException {
+        asicReaderFactory = AsicReaderFactory.legacy().build();
     }
 
     @Test
-    public void readingContentWithInputStream() throws IOException {
-        // Testing using AsicReader::inputStream.
-        AsicReader asicReader = asicReaderFactory.open(getClass().getResourceAsStream("/asic-cades-test-valid.asice"));
-        while (asicReader.getNextFile() != null)
-            ByteStreams.copy(asicReader.inputStream(), ByteStreams.nullOutputStream());
-        asicReader.close();
-        Assert.assertEquals(1, asicReader.getAsicManifest().getCertificate().size());
+    public void simple() throws IOException {
+        helper("/asic-cades-test-valid.asice");
+    }
+
+    @Test(expectedExceptions = AsicException.class)
+    public void simpleInvalidSignature() throws IOException {
+        helper("/asic-cades-test-invalid-signature.asice");
+    }
+
+    @Test(expectedExceptions = AsicException.class)
+    public void simpleInvalidSigReference() throws IOException {
+        helper("/asic-cades-test-invalid-sigreference.asice");
+    }
+
+    @Test(expectedExceptions = AsicException.class)
+    public void simpleInvalidManifest() throws IOException {
+        helper("/asic-cades-test-invalid-manifest.asice");
+    }
+
+    @Test(expectedExceptions = AsicException.class, enabled = false)
+    public void simpleInvalidMetadataFile() throws IOException {
+        helper("/asic-cades-test-invalid-metadata-file.asice");
     }
 
     @Test
-    public void readingContentWithoutReading() throws IOException {
-        // Testing using no functionality to read content.
-        AsicReader asicReader = asicReaderFactory.open(getClass().getResourceAsStream("/asic-cades-test-valid.asice"));
-        while (asicReader.getNextFile() != null) {
-            // No action
+    public void simpleVerifyValid() throws IOException {
+        try (InputStream inputStream = getClass().getResourceAsStream("/asic-cades-test-valid.asice")) {
+            asicReaderFactory.verifyContainer(inputStream);
         }
-        asicReader.close();
-        Assert.assertEquals(1, asicReader.getAsicManifest().getCertificate().size());
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void exceptionOnEmpty() throws IOException {
-        AsicReader asicReader = asicReaderFactory.open(getClass().getResourceAsStream("/asic-cades-test-valid.asice"));
-        while (asicReader.getNextFile() != null)
-            asicReader.writeFile(ByteStreams.nullOutputStream());
+    @Test(expectedExceptions = AsicException.class)
+    public void simpleVerifyInvalidSigReference() throws IOException {
+        try (InputStream inputStream = getClass().getResourceAsStream("/asic-cades-test-invalid-sigreference.asice")) {
+            asicReaderFactory.verifyContainer(inputStream);
+        }
+    }
 
-        // Trigger exception.
-        asicReader.inputStream();
+    private void helper(String resource) throws IOException {
+        try (InputStream inputStream = getClass().getResourceAsStream(resource);
+             AsicReader asicReader = asicReaderFactory.openContainer(inputStream).build()) {
 
-        Assert.fail("Exception not triggered.");
+            String filename;
+            while ((filename = asicReader.next()) != null) {
+                System.out.println(filename);
+
+                try (InputStream content = asicReader.getContent()) {
+                    ByteStreams.copy(content, ByteStreams.nullOutputStream());
+                }
+            }
+        }
     }
 }

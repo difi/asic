@@ -1,6 +1,7 @@
 package no.difi.asic.processor;
 
-import no.difi.asic.AsicUtils;
+import no.difi.asic.Asic;
+import no.difi.asic.annotation.Processor;
 import no.difi.asic.api.AsicWriterLayer;
 import no.difi.asic.api.WriterProcessor;
 import no.difi.asic.lang.AsicException;
@@ -19,13 +20,16 @@ import java.io.OutputStream;
 /**
  * @author erlend
  */
+@Processor(Processor.State.AFTER_SIGNATURE)
 public class OasisManifestWriter extends OasisManifestCommons implements WriterProcessor {
+
+    public static WriterProcessor INSTANCE = new OasisManifestWriter();
 
     @Override
     public void perform(AsicWriterLayer asicWriterLayer, Container container) throws IOException {
         Manifest manifest = OBJECT_FACTORY.createManifest();
 
-        manifest.getFileEntry().add(createFileEntity("/", MimeType.forString(AsicUtils.MIMETYPE_ASICE)));
+        manifest.getFileEntry().add(createFileEntity("/", MimeType.forString(Asic.MIMETYPE_ASICE)));
 
         for (DataObject dataObject : container.getDataObjects())
             manifest.getFileEntry().add(createFileEntity(dataObject.getFilename(), dataObject.getMimeType()));
