@@ -2,6 +2,7 @@ package no.difi.asic;
 
 import no.difi.asic.api.AsicReader;
 import no.difi.asic.api.AsicReaderLayer;
+import no.difi.asic.api.DecryptionFilter;
 import no.difi.asic.api.Supporting;
 import no.difi.asic.builder.Properties;
 import no.difi.asic.model.Container;
@@ -25,6 +26,8 @@ class AsicReaderImpl implements AsicReader {
 
     private List<Supporting> handlers = new ArrayList<>();
 
+    private List<DecryptionFilter> decryptionFilters;
+
     private FileCache fileCache = new FileCache();
 
     public AsicReaderImpl(Properties properties, InputStream inputStream) throws IOException {
@@ -32,6 +35,8 @@ class AsicReaderImpl implements AsicReader {
 
         handlers.add(properties.get(Asic.SIGNATURE_VERIFIER));
         handlers.addAll(properties.get(Asic.READER_PROCESSORS));
+
+        decryptionFilters = properties.get(Asic.DECRYPTION_FILTER);
 
         MultiMessageDigest messageDigest =
                 new MultiMessageDigest(properties.get(Asic.SIGNATURE_OBJECT_ALGORITHM));
@@ -44,7 +49,11 @@ class AsicReaderImpl implements AsicReader {
         if (filename == null) {
             properties.get(Asic.SIGNATURE_VERIFIER)
                     .postHandler(container, fileCache, properties);
+
+            // TODO Verify all files in container.
         } else {
+            // TODO Encrypted content?
+
             Optional<Supporting> supporting = handlers.stream()
                     .filter(h -> h.supports(filename))
                     .findFirst();

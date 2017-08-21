@@ -102,4 +102,4 @@ asicReader.close();
 ## Security
 
 This library validate signatures, but does not validate the certificate. It's up to the implementer using the library
-to choose if and how to validate certificates. Certificate(s) used for validation is exposed by the library.
+to choose if and how to validate certificates. Certificates used for signing are exposed by the library.

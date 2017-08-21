@@ -1,8 +1,9 @@
 package no.difi.asic.api;
 
+import no.difi.asic.builder.Properties;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.PrivateKey;
 
 /**
  * @author erlend
@@ -11,7 +12,6 @@ public interface DecryptionFilter {
 
     boolean isEncrypted(String filename);
 
-    InputStream createFilter(InputStream inputStream, Enum<?> algorithm, PrivateKey privateKey)
-            throws IOException;
+    InputStream createFilter(InputStream inputStream, Properties properties) throws IOException;
 
 }

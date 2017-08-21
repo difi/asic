@@ -3,7 +3,8 @@ package no.difi.asic.api;
 import no.difi.asic.builder.Property;
 import no.difi.asic.code.EncryptionAlgorithm;
 import no.difi.asic.code.MessageDigestAlgorithm;
-import no.difi.asic.encryption.CmsEncryptionFilter;
+import no.difi.asic.encryption.CmsDecryptionDetectorFilter;
+import no.difi.asic.encryption.CmsEncryptionDetectorFilter;
 import no.difi.asic.processor.OasisManifestReader;
 import no.difi.asic.processor.OasisManifestWriter;
 import no.difi.asic.signature.CadesSignatureCreator;
@@ -23,19 +24,22 @@ public interface AsicConfig {
     Property<List<KeyStore.PrivateKeyEntry>> DECRYPTION_CERTIFICATES =
             Property.create();
 
-    Property<EncryptionAlgorithm> DECRYPTION_ALGORITHM =
-            Property.create(EncryptionAlgorithm.AES256_GCM);
+    Property<List<EncryptionAlgorithm>> DECRYPTION_ALGORITHM =
+            Property.createList(EncryptionAlgorithm.AES256_GCM, EncryptionAlgorithm.AES256_CBC);
+
+    Property<List<DecryptionFilter>> DECRYPTION_FILTER =
+            Property.createList(CmsDecryptionDetectorFilter.INSTANCE);
 
     // ENCRYPTION
 
     Property<EncryptionAlgorithm> ENCRYPTION_ALGORITHM =
             Property.create(EncryptionAlgorithm.AES256_GCM);
 
-    Property<X509Certificate> ENCRYPTION_CERTIFICATES =
+    Property<List<X509Certificate>> ENCRYPTION_CERTIFICATES =
             Property.create();
 
     Property<EncryptionFilter> ENCRYPTION_FILTER =
-            Property.create(CmsEncryptionFilter.INSTANCE);
+            Property.create(CmsEncryptionDetectorFilter.INSTANCE);
 
     // SIGNATURE
 

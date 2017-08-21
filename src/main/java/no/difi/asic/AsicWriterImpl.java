@@ -3,6 +3,7 @@ package no.difi.asic;
 import no.difi.asic.annotation.Processor;
 import no.difi.asic.api.AsicWriter;
 import no.difi.asic.api.AsicWriterLayer;
+import no.difi.asic.api.EncryptionFilter;
 import no.difi.asic.builder.Properties;
 import no.difi.asic.lang.AsicException;
 import no.difi.asic.model.Container;
@@ -32,6 +33,8 @@ class AsicWriterImpl implements AsicWriter {
 
     private Properties properties;
 
+    private boolean encrypt = false;
+
     protected AsicWriterImpl(Properties properties, OutputStream outputStream, boolean closeStreamOnClose)
             throws IOException {
         this.properties = properties;
@@ -53,20 +56,42 @@ class AsicWriterImpl implements AsicWriter {
         if (filename.toUpperCase().startsWith("META-INF/"))
             throw new AsicException("Adding files to META-INF is not allowed.");
 
-        return asicWriterLayer.addContent(DataObject.Type.DATA, filename,
-                mimeType != null ? mimeType : MimeTypes.detect(filename));
+        if (encrypt) {
+            encrypt = false;
+
+            EncryptionFilter encryptionFilter = properties.get(Asic.ENCRYPTION_FILTER);
+
+            return encryptionFilter.createFilter(asicWriterLayer.addContent(
+                    DataObject.Type.DATA,
+                    encryptionFilter.filename(filename),
+                    mimeType != null ? mimeType : MimeTypes.detect(filename)), properties);
+        } else {
+            return asicWriterLayer.addContent(
+                    DataObject.Type.DATA,
+                    filename,
+                    mimeType != null ? mimeType : MimeTypes.detect(filename));
+        }
     }
 
     @Override
-    public void setRootFile(String filename) throws AsicException {
+    public AsicWriter encryptNext() {
+        encrypt = true;
+
+        return this;
+    }
+
+    @Override
+    public AsicWriter setRootFile(String filename) throws AsicException {
         if (!properties.get(Asic.SIGNATURE_CREATOR).supportsRootFile())
             throw new AsicException("Root file is not supported with current configuration.");
 
         container.setRootFile(filename);
+
+        return this;
     }
 
     @Override
-    public void sign() throws IOException {
+    public AsicWriter sign() throws IOException {
         performProcessors(Processor.State.BEFORE_SIGNATURE);
 
         properties.get(Asic.SIGNATURE_CREATOR)
@@ -75,6 +100,8 @@ class AsicWriterImpl implements AsicWriter {
         signed = true;
 
         performProcessors(Processor.State.AFTER_SIGNATURE);
+
+        return this;
     }
 
     @Override

@@ -4,13 +4,16 @@ import com.google.common.io.ByteStreams;
 import no.difi.asic.api.AsicWriter;
 import no.difi.asic.api.AsicWriterFactory;
 import no.difi.asic.lang.AsicException;
+import no.difi.asic.model.MimeType;
 import no.difi.asic.util.KeyStoreUtil;
 import no.difi.asic.util.MimeTypes;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.security.KeyStore;
+import java.security.cert.X509Certificate;
 
 /**
  * @author erlend
@@ -19,9 +22,10 @@ public class AsicWriterTest {
 
     private AsicWriterFactory asicWriterFactory;
 
+    private KeyStore.PrivateKeyEntry keyEntry;
+
     @BeforeClass
     public void beforeClass() throws IOException {
-        KeyStore.PrivateKeyEntry keyEntry;
         try (InputStream inputStream = getClass().getResourceAsStream("/keystore.jks")) {
             keyEntry = KeyStoreUtil.load(inputStream, "changeit", "selfsigned", "changeit");
         }
@@ -83,6 +87,26 @@ public class AsicWriterTest {
         // This is expected to trigger exception.
         try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
             asicWriter.add(inputStream, "bii-envelope.xml", MimeTypes.XML);
+        }
+    }
+
+    @Test(enabled = false)
+    public void withEncryption() throws IOException {
+        try (AsicWriter asicWriter = asicWriterFactory.newContainer(Paths.get("encrypted.asice"))
+                .set(Asic.ENCRYPTION_CERTIFICATES, (X509Certificate) keyEntry.getCertificate())
+                .build()) {
+
+            try (InputStream inputStream = getClass().getResourceAsStream("/image.bmp");
+                 OutputStream outputStream = asicWriter.add("image1.bmp", MimeType.forString("image/bmp"))) {
+                ByteStreams.copy(inputStream, outputStream);
+            }
+
+            try (InputStream inputStream = getClass().getResourceAsStream("/image.bmp");
+                 OutputStream outputStream = asicWriter.encryptNext().add("image2.bmp", MimeType.forString("image/bmp"))) {
+                ByteStreams.copy(inputStream, outputStream);
+            }
+
+            asicWriter.sign();
         }
     }
 }
