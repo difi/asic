@@ -1,6 +1,6 @@
 package no.difi.commons.asic.security;
 
-import no.difi.commons.asic.code.MessageDigestAlgorithm;
+import no.difi.commons.asic.api.MessageDigestAlgorithm;
 import no.difi.commons.asic.lang.AsicException;
 
 import java.io.FilterOutputStream;

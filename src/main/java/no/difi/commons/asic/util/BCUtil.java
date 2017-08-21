@@ -1,6 +1,6 @@
 package no.difi.commons.asic.util;
 
-import no.difi.commons.asic.code.MessageDigestAlgorithm;
+import no.difi.commons.asic.api.MessageDigestAlgorithm;
 import no.difi.commons.asic.lang.AsicException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 

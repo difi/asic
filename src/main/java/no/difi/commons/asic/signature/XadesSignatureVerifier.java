@@ -4,7 +4,7 @@ import com.google.common.io.ByteStreams;
 import no.difi.commons.asic.api.AsicReaderLayer;
 import no.difi.commons.asic.api.SignatureVerifier;
 import no.difi.commons.asic.builder.Properties;
-import no.difi.commons.asic.code.MessageDigestAlgorithm;
+import no.difi.commons.asic.code.MessageDigestAlgorithms;
 import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
@@ -114,7 +114,7 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
                     container.update(reference.getURI(), DataObject.Type.DATA, MimeTypes.XML);
 
                     /*container.verify(null, reference.getURI(),
-                            MessageDigestAlgorithm.findByUri(reference.getDigestMethod().getAlgorithm()),
+                            MessageDigestAlgorithms.findByUri(reference.getDigestMethod().getAlgorithm()), // TODO Use API
                             reference.getDigestValue());*/
                 }
             }
@@ -186,7 +186,7 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
                         final PublicKey key = certificate.getPublicKey();
 
                         // Make sure the algorithm is compatible with the method.
-                        MessageDigestAlgorithm.findByUri(method.getAlgorithm());
+                        MessageDigestAlgorithms.findByUri(method.getAlgorithm()); // TODO Use API
 
                         return () -> key;
                     }

@@ -43,10 +43,8 @@ public class CmsDecryptionAuthDataFilter extends CmsDecryptionAbstractFilter {
 
             /*
             // Verify valid encryption algorithm is used.
-            if (properties.get(Asic.DECRYPTION_VERIFY_ALGORITHM) && properties.get(Asic.DECRYPTION_ALGORITHM).stream()
-                    .map(EncryptionAlgorithm::getOid)
-                    .map(ASN1ObjectIdentifier::getId)
-                    .noneMatch(parser.getMacAlgorithm()::equals))
+            if (properties.get(Asic.DECRYPTION_VERIFY_ALGORITHM) &&
+                    !EncryptionAlgorithm.oidInList(parser.getEncryptionAlgOID(), properties.get(Asic.DECRYPTION_ALGORITHM)))
                 throw new AsicException(String.format("Invalid encryption '%s' was used.", parser.getMacAlgOID()));
                 */
 

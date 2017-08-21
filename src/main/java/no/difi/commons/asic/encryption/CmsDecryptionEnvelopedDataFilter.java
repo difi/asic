@@ -2,11 +2,10 @@ package no.difi.commons.asic.encryption;
 
 import no.difi.commons.asic.Asic;
 import no.difi.commons.asic.api.DecryptionFilter;
+import no.difi.commons.asic.api.EncryptionAlgorithm;
 import no.difi.commons.asic.builder.Properties;
-import no.difi.commons.asic.code.EncryptionAlgorithm;
 import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.util.BCUtil;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.cms.CMSEnvelopedDataParser;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.KeyTransRecipientId;
@@ -44,10 +43,8 @@ public class CmsDecryptionEnvelopedDataFilter extends CmsDecryptionAbstractFilte
             CMSEnvelopedDataParser parser = new CMSEnvelopedDataParser(inputStream);
 
             // Verify valid encryption algorithm is used.
-            if (properties.get(Asic.DECRYPTION_VERIFY_ALGORITHM) && properties.get(Asic.DECRYPTION_ALGORITHM).stream()
-                    .map(EncryptionAlgorithm::getOid)
-                    .map(ASN1ObjectIdentifier::getId)
-                    .noneMatch(parser.getEncryptionAlgOID()::equals))
+            if (properties.get(Asic.DECRYPTION_VERIFY_ALGORITHM) &&
+                    !EncryptionAlgorithm.oidInList(parser.getEncryptionAlgOID(), properties.get(Asic.DECRYPTION_ALGORITHM)))
                 throw new AsicException(String.format("Invalid encryption '%s' was used.", parser.getEncryptionAlgOID()));
 
             RecipientInformation recipient = null;

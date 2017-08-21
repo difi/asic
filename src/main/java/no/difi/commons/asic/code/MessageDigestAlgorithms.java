@@ -1,5 +1,7 @@
 package no.difi.commons.asic.code;
 
+import no.difi.commons.asic.api.MessageDigestAlgorithm;
+
 /**
  * ETSI TS 102 918 v1.1.1 and v1.3.1 differs in Annex B part B.3 when it comes to namespace used to declare identifiers
  * for hashing algorithms. Version 1.1.1 uses XMLDSig namespace and version 1.3.1 uses XMLEnc namespace. As it is most
@@ -10,7 +12,7 @@ package no.difi.commons.asic.code;
  *
  * @author erlend
  */
-public enum MessageDigestAlgorithm {
+public enum MessageDigestAlgorithms implements MessageDigestAlgorithm {
 
     // MD5 is omitted.
 
@@ -40,21 +42,23 @@ public enum MessageDigestAlgorithm {
 
     private final String[] uri;
 
-    MessageDigestAlgorithm(String str, String... uri) {
+    MessageDigestAlgorithms(String str, String... uri) {
         this.str = str;
         this.uri = uri;
     }
 
+    @Override
     public String getString() {
         return str;
     }
 
+    @Override
     public String getURI() {
         return uri[0];
     }
 
-    public static MessageDigestAlgorithm findByUri(String uri) {
-        for (MessageDigestAlgorithm algorithm : values())
+    public static MessageDigestAlgorithms findByUri(String uri) {
+        for (MessageDigestAlgorithms algorithm : values())
             for (String u : algorithm.uri)
                 if (u.equals(uri))
                     return algorithm;

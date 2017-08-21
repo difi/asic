@@ -1,6 +1,6 @@
 package no.difi.commons.asic.security;
 
-import no.difi.commons.asic.code.MessageDigestAlgorithm;
+import no.difi.commons.asic.api.MessageDigestAlgorithm;
 import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.Hash;
 import no.difi.commons.asic.util.BCUtil;

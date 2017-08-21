@@ -4,7 +4,7 @@ import no.difi.commons.asic.api.AsicConfig;
 import no.difi.commons.asic.api.AsicReaderFactory;
 import no.difi.commons.asic.api.AsicWriterFactory;
 import no.difi.commons.asic.builder.Builder;
-import no.difi.commons.asic.code.MessageDigestAlgorithm;
+import no.difi.commons.asic.code.MessageDigestAlgorithms;
 import no.difi.commons.asic.encryption.CmsEncryptionEnvelopedDataFilter;
 
 public interface Asic extends AsicConfig {
@@ -27,8 +27,8 @@ public interface Asic extends AsicConfig {
     static Builder<AsicReaderFactory> legacyReaderFactoryBuilder() {
         return readerFactoryBuilder()
                 .set(Asic.SIGNATURE_ALGORITHM,
-                        MessageDigestAlgorithm.SHA1,
-                        MessageDigestAlgorithm.SHA256);
+                        MessageDigestAlgorithms.SHA1,
+                        MessageDigestAlgorithms.SHA256);
     }
 
     static Builder<AsicWriterFactory> writerFactoryBuilder() {
@@ -46,6 +46,6 @@ public interface Asic extends AsicConfig {
                 .set(Asic.ENCRYPTION_FILTER,
                         CmsEncryptionEnvelopedDataFilter.INSTANCE)
                 .set(Asic.SIGNATURE_ALGORITHM,
-                        MessageDigestAlgorithm.SHA1);
+                        MessageDigestAlgorithms.SHA1);
     }
 }

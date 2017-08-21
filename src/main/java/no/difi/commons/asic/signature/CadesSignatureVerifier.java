@@ -4,7 +4,7 @@ import com.google.common.io.ByteStreams;
 import no.difi.commons.asic.api.AsicReaderLayer;
 import no.difi.commons.asic.api.SignatureVerifier;
 import no.difi.commons.asic.builder.Properties;
-import no.difi.commons.asic.code.MessageDigestAlgorithm;
+import no.difi.commons.asic.code.MessageDigestAlgorithms;
 import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
@@ -94,7 +94,7 @@ public class CadesSignatureVerifier extends CadesCommons implements SignatureVer
                     MimeType.forString(reference.getMimeType()));
 
             container.verify(null, reference.getURI(),
-                    MessageDigestAlgorithm.findByUri(reference.getDigestMethod().getAlgorithm()),
+                    MessageDigestAlgorithms.findByUri(reference.getDigestMethod().getAlgorithm()), // TODO Use API
                     reference.getDigestValue());
 
             if (reference.isRootfile() != null && reference.isRootfile())

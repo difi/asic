@@ -1,6 +1,6 @@
 package no.difi.commons.asic.model;
 
-import no.difi.commons.asic.code.MessageDigestAlgorithm;
+import no.difi.commons.asic.api.MessageDigestAlgorithm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
