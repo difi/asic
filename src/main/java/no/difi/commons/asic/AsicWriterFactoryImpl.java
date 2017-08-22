@@ -34,7 +34,7 @@ class AsicWriterFactoryImpl implements AsicWriterFactory {
 
     private Builder<AsicWriter> newContainer(final OutputStream outputStream, final boolean closeStreamOnClose)
             throws IOException {
-        return new Builder<>(properties, properties -> {
+        return Builder.of(properties, properties -> {
             try {
                 return new AsicWriterImpl(properties, outputStream, closeStreamOnClose);
             } catch (IOException e) {

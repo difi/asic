@@ -57,12 +57,12 @@ public enum MessageDigestAlgorithms implements MessageDigestAlgorithm {
         return uri[0];
     }
 
-    public static MessageDigestAlgorithms findByUri(String uri) {
-        for (MessageDigestAlgorithms algorithm : values())
-            for (String u : algorithm.uri)
-                if (u.equals(uri))
-                    return algorithm;
+    @Override
+    public boolean containsUri(String uri) {
+        for (String u : this.uri)
+            if (u.equals(uri))
+                return true;
 
-        throw new IllegalArgumentException(String.format("Unknown algorithm '%s'.", uri));
+        return false;
     }
 }

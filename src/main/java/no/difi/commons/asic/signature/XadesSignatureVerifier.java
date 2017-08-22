@@ -1,19 +1,20 @@
 package no.difi.commons.asic.signature;
 
 import com.google.common.io.ByteStreams;
+import no.difi.commons.asic.Asic;
 import no.difi.commons.asic.api.AsicReaderLayer;
+import no.difi.commons.asic.api.MessageDigestAlgorithm;
 import no.difi.commons.asic.api.SignatureVerifier;
 import no.difi.commons.asic.builder.Properties;
-import no.difi.commons.asic.code.MessageDigestAlgorithms;
+import no.difi.commons.asic.jaxb.cades.XAdESSignaturesType;
+import no.difi.commons.asic.jaxb.xmldsig.ReferenceType;
+import no.difi.commons.asic.jaxb.xmldsig.SignatureType;
+import no.difi.commons.asic.jaxb.xmldsig.SignedInfoType;
 import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
 import no.difi.commons.asic.model.FileCache;
 import no.difi.commons.asic.util.MimeTypes;
-import no.difi.commons.asic.jaxb.cades.XAdESSignaturesType;
-import no.difi.commons.asic.jaxb.xmldsig.ReferenceType;
-import no.difi.commons.asic.jaxb.xmldsig.SignatureType;
-import no.difi.commons.asic.jaxb.xmldsig.SignedInfoType;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -85,7 +86,7 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = documentBuilder.parse(new ByteArrayInputStream(bytes));
 
-            certificate = verify(document);
+            certificate = verify(document, properties);
         } catch (ParserConfigurationException | SAXException e) {
             throw new IllegalStateException("Unable to read content as XML", e);
         }
@@ -113,21 +114,23 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
                 if (!reference.getURI().startsWith("#")) {
                     container.update(reference.getURI(), DataObject.Type.DATA, MimeTypes.XML);
 
-                    /*container.verify(null, reference.getURI(),
-                            MessageDigestAlgorithms.findByUri(reference.getDigestMethod().getAlgorithm()), // TODO Use API
-                            reference.getDigestValue());*/
+                    /*
+                    container.verify(null, reference.getURI(),
+                            MessageDigestAlgorithm.findByUri(reference.getDigestMethod().getAlgorithm(), properties.get(Asic.SIGNATURE_OBJECT_ALGORITHM)),
+                            reference.getDigestValue());
+                            */
                 }
             }
         }
     }
 
-    public X509Certificate verify(Document document) throws AsicException {
+    public X509Certificate verify(Document document, Properties properties) throws AsicException {
         try {
             NodeList nl = document.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
             if (nl.getLength() == 0)
                 throw new AsicException("Cannot find Signature element");
 
-            X509KeySelector keySelector = new X509KeySelector();
+            X509KeySelector keySelector = new X509KeySelector(properties);
             DOMValidateContext validateContext = new DOMValidateContext(keySelector, nl.item(0));
 
             XMLSignature signature = xmlSignatureFactory.unmarshalXMLSignature(validateContext);
@@ -165,34 +168,37 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
 
         private X509Certificate certificate;
 
+        private final Properties properties;
+
+        public X509KeySelector(Properties properties) {
+            this.properties = properties;
+        }
+
         @Override
         public KeySelectorResult select(KeyInfo keyInfo, KeySelector.Purpose purpose, AlgorithmMethod method,
                                         XMLCryptoContext context) throws KeySelectorException {
-            try {
-                Iterator ki = keyInfo.getContent().iterator();
-                while (ki.hasNext()) {
-                    XMLStructure info = (XMLStructure) ki.next();
-                    if (!(info instanceof X509Data))
+            Iterator ki = keyInfo.getContent().iterator();
+            while (ki.hasNext()) {
+                XMLStructure info = (XMLStructure) ki.next();
+                if (!(info instanceof X509Data))
+                    continue;
+
+                X509Data x509Data = (X509Data) info;
+                Iterator xi = x509Data.getContent().iterator();
+                while (xi.hasNext()) {
+                    Object o = xi.next();
+                    if (!(o instanceof X509Certificate))
                         continue;
 
-                    X509Data x509Data = (X509Data) info;
-                    Iterator xi = x509Data.getContent().iterator();
-                    while (xi.hasNext()) {
-                        Object o = xi.next();
-                        if (!(o instanceof X509Certificate))
-                            continue;
+                    this.certificate = (X509Certificate) o;
+                    final PublicKey key = certificate.getPublicKey();
 
-                        this.certificate = (X509Certificate) o;
-                        final PublicKey key = certificate.getPublicKey();
+                    // Make sure the algorithm is compatible with the method.
+                    if (MessageDigestAlgorithm.findByUri(method.getAlgorithm(), properties.get(Asic.SIGNATURE_ALGORITHM)) == null)
+                        throw new KeySelectorException(String.format("Invalid signature algorithm '%s' is used.", method.getAlgorithm()));
 
-                        // Make sure the algorithm is compatible with the method.
-                        MessageDigestAlgorithms.findByUri(method.getAlgorithm()); // TODO Use API
-
-                        return () -> key;
-                    }
+                    return () -> key;
                 }
-            } catch (IllegalArgumentException e) {
-                throw new KeySelectorException(e.getMessage(), e);
             }
 
             throw new KeySelectorException("No key found!");

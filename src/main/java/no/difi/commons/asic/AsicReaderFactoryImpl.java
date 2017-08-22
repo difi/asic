@@ -24,7 +24,7 @@ class AsicReaderFactoryImpl implements AsicReaderFactory {
     @Override
     public Builder<AsicReader> openContainer(InputStream inputStream) throws IOException {
         try {
-            return new Builder<>(properties, properties -> {
+            return Builder.of(properties, properties -> {
                 try {
                     return new AsicReaderImpl(properties, inputStream);
                 } catch (IOException e) {

@@ -15,7 +15,7 @@ public interface Asic extends AsicConfig {
     String MIMETYPE_ASICE = "application/vnd.etsi.asic-e+zip";
 
     static Builder<AsicReaderFactory> readerFactoryBuilder() {
-        return new Builder<>(AsicReaderFactoryImpl::new);
+        return Builder.of(AsicReaderFactoryImpl::new);
     }
 
     /**
@@ -32,7 +32,7 @@ public interface Asic extends AsicConfig {
     }
 
     static Builder<AsicWriterFactory> writerFactoryBuilder() {
-        return new Builder<>(AsicWriterFactoryImpl::new);
+        return Builder.of(AsicWriterFactoryImpl::new);
     }
 
     /**

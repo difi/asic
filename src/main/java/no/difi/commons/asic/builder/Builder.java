@@ -14,12 +14,16 @@ public class Builder<T> {
 
     protected Map<Property<?>, Object> map;
 
-    public Builder(BuildHandler<T> buildHandler) {
-        this(buildHandler, new HashMap<>());
+    public static <T> Builder<T> of(BuildHandler<T> buildHandler) {
+        return new Builder<>(buildHandler, new HashMap<>());
     }
 
-    public Builder(Properties properties, BuildHandler<T> buildHandler) {
-        this(buildHandler, properties.map);
+    public static <T> Builder<T> of(Properties properties, BuildHandler<T> buildHandler) {
+        return new Builder<>(buildHandler, properties.map);
+    }
+
+    public static Builder<Properties> raw() {
+        return new Builder<>(p -> p, new HashMap<>());
     }
 
     private Builder(BuildHandler<T> buildHandler, Map<Property<?>, Object> map) {

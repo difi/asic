@@ -4,8 +4,8 @@ import com.google.common.io.ByteStreams;
 import no.difi.commons.asic.Asic;
 import no.difi.commons.asic.api.DecryptionFilter;
 import no.difi.commons.asic.api.EncryptionFilter;
+import no.difi.commons.asic.builder.Builder;
 import no.difi.commons.asic.builder.Properties;
-import no.difi.commons.asic.test.PropertiesFetcher;
 import no.difi.commons.asic.util.KeyStoreUtil;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -37,11 +37,10 @@ public class CmsEnvelopedDataFilterTest {
     @SuppressWarnings("Duplicates")
     @Test
     public void simple() throws IOException {
-        Properties properties = PropertiesFetcher.builder()
+        Properties properties = Builder.raw()
                 .set(Asic.ENCRYPTION_CERTIFICATES, (X509Certificate) keyEntry.getCertificate(), (X509Certificate) keyEntry.getCertificate())
                 .set(Asic.DECRYPTION_CERTIFICATES, keyEntry)
-                .build()
-                .getProperties();
+                .build();
 
         byte[] content = ByteStreams.toByteArray(getClass().getResourceAsStream("/image.bmp"));
 

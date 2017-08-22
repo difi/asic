@@ -1,5 +1,7 @@
 package no.difi.commons.asic.api;
 
+import java.util.List;
+
 /**
  * @author erlend
  */
@@ -9,8 +11,18 @@ public interface MessageDigestAlgorithm {
 
     String getURI();
 
+    boolean containsUri(String uri);
+
     static MessageDigestAlgorithm of(String str, String... uri) {
         return new DefaultMessageDigestAlgorithm(str, uri);
+    }
+
+    static MessageDigestAlgorithm findByUri(String uri, List<MessageDigestAlgorithm> algorithms) {
+        for (MessageDigestAlgorithm algorithm : algorithms)
+            if (algorithm.containsUri(uri))
+                return algorithm;
+
+        return null;
     }
 
     class DefaultMessageDigestAlgorithm implements MessageDigestAlgorithm {
@@ -24,13 +36,23 @@ public interface MessageDigestAlgorithm {
             this.uri = uri;
         }
 
+        @Override
         public String getString() {
             return str;
         }
 
+        @Override
         public String getURI() {
             return uri[0];
         }
 
+        @Override
+        public boolean containsUri(String uri) {
+            for (String u : this.uri)
+                if (u.equals(uri))
+                    return true;
+
+            return false;
+        }
     }
 }

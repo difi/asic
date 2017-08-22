@@ -1,10 +1,13 @@
 package no.difi.commons.asic.signature;
 
 import com.google.common.io.ByteStreams;
+import no.difi.commons.asic.Asic;
 import no.difi.commons.asic.api.AsicReaderLayer;
+import no.difi.commons.asic.api.MessageDigestAlgorithm;
 import no.difi.commons.asic.api.SignatureVerifier;
 import no.difi.commons.asic.builder.Properties;
-import no.difi.commons.asic.code.MessageDigestAlgorithms;
+import no.difi.commons.asic.jaxb.cades.ASiCManifestType;
+import no.difi.commons.asic.jaxb.cades.DataObjectReferenceType;
 import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
@@ -12,8 +15,6 @@ import no.difi.commons.asic.model.FileCache;
 import no.difi.commons.asic.model.MimeType;
 import no.difi.commons.asic.util.BCUtil;
 import no.difi.commons.asic.util.MimeTypes;
-import no.difi.commons.asic.jaxb.cades.ASiCManifestType;
-import no.difi.commons.asic.jaxb.cades.DataObjectReferenceType;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -73,10 +74,10 @@ public class CadesSignatureVerifier extends CadesCommons implements SignatureVer
             throws IOException {
         for (String filename : fileCache.keySet())
             if (PATTERN_MANIFEST.matcher(filename).matches())
-                verifyManifest(filename, container, fileCache);
+                verifyManifest(filename, container, fileCache, properties);
     }
 
-    private void verifyManifest(String filename, Container container, FileCache fileCache)
+    private void verifyManifest(String filename, Container container, FileCache fileCache, Properties properties)
             throws IOException {
         ASiCManifestType aSiCManifest = parseManifest(fileCache.get(filename));
 
@@ -94,7 +95,9 @@ public class CadesSignatureVerifier extends CadesCommons implements SignatureVer
                     MimeType.forString(reference.getMimeType()));
 
             container.verify(null, reference.getURI(),
-                    MessageDigestAlgorithms.findByUri(reference.getDigestMethod().getAlgorithm()), // TODO Use API
+                    MessageDigestAlgorithm.findByUri(
+                            reference.getDigestMethod().getAlgorithm(),
+                            properties.get(Asic.SIGNATURE_OBJECT_ALGORITHM)),
                     reference.getDigestValue());
 
             if (reference.isRootfile() != null && reference.isRootfile())
