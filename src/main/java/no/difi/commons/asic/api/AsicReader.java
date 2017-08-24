@@ -1,6 +1,7 @@
 package no.difi.commons.asic.api;
 
 import com.google.common.io.ByteStreams;
+import no.difi.commons.asic.model.Container;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -15,9 +16,7 @@ public interface AsicReader extends Closeable {
 
     InputStream getContent() throws IOException;
 
-    default void writeTo(File file) throws IOException {
-        writeTo(file.toPath());
-    }
+    Container getContainer() throws IOException;
 
     default void writeTo(Path path) throws IOException {
         try (OutputStream outputStream = Files.newOutputStream(path)) {

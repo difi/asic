@@ -10,7 +10,7 @@ import java.io.InputStream;
  */
 public interface AsicReaderFactory {
 
-    Builder<AsicReader> openContainer(InputStream inputStream) throws IOException;
+    Builder<AsicReader, IOException> openContainer(InputStream inputStream);
 
     void verifyContainer(InputStream inputStream) throws IOException;
 }

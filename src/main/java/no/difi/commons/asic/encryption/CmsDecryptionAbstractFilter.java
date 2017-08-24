@@ -14,4 +14,9 @@ abstract class CmsDecryptionAbstractFilter implements DecryptionFilter {
     public boolean isEncrypted(String filename) {
         return filename.endsWith(".p7m");
     }
+
+    @Override
+    public String parseFilename(String filename) {
+        return filename.substring(0, filename.length() - 4);
+    }
 }

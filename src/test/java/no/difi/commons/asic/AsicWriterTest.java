@@ -30,7 +30,7 @@ public class AsicWriterTest {
             keyEntry = KeyStoreUtil.load(inputStream, "changeit", "selfsigned", "changeit");
         }
 
-        asicWriterFactory = Asic.legacyWriterFactoryBuilder()
+        asicWriterFactory = LegacyAsic.writerFactoryBuilder()
                 .set(Asic.SIGNATURE_CERTIFICATES, keyEntry)
                 .build();
     }
@@ -57,7 +57,7 @@ public class AsicWriterTest {
             asicWriter.sign();
         }
 
-        Asic.legacyReaderFactoryBuilder().build()
+        LegacyAsic.readerFactoryBuilder().build()
                 .verifyContainer(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
 
         // Assert.assertEquals(asicVerifier.getAsicManifest().getFile().size(), 2);

@@ -20,7 +20,7 @@ public class AsicReaderTest {
 
     @BeforeClass
     public void beforeClass() throws IOException {
-        asicReaderFactory = Asic.legacyReaderFactoryBuilder().build();
+        asicReaderFactory = LegacyAsic.readerFactoryBuilder().build();
     }
 
     @Test

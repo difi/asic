@@ -4,20 +4,24 @@ import no.difi.commons.asic.api.AsicReader;
 import no.difi.commons.asic.api.AsicReaderLayer;
 import no.difi.commons.asic.api.DecryptionFilter;
 import no.difi.commons.asic.api.Supporting;
+import no.difi.commons.asic.builder.Properties;
+import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.FileCache;
 import no.difi.commons.asic.security.MultiMessageDigest;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author erlend
  */
 class AsicReaderImpl implements AsicReader {
 
-    private no.difi.commons.asic.builder.Properties properties;
+    private Properties properties;
 
     private AsicReaderLayer asicReaderLayer;
 
@@ -29,45 +33,78 @@ class AsicReaderImpl implements AsicReader {
 
     private FileCache fileCache = new FileCache();
 
-    public AsicReaderImpl(no.difi.commons.asic.builder.Properties properties, InputStream inputStream) throws IOException {
+    private boolean finished = false;
+
+    private DecryptionFilter currentFilter;
+
+    public AsicReaderImpl(Properties properties, InputStream inputStream)
+            throws IOException {
         this.properties = properties;
 
+        // Setting up handlers
         handlers.add(properties.get(Asic.SIGNATURE_VERIFIER));
         handlers.addAll(properties.get(Asic.READER_PROCESSORS));
 
+        // Decryption filter
         decryptionFilters = properties.get(Asic.DECRYPTION_FILTER);
 
+        // Create digester
         MultiMessageDigest messageDigest =
                 new MultiMessageDigest(properties.get(Asic.SIGNATURE_OBJECT_ALGORITHM));
+
+        // Creating layer
         asicReaderLayer = new AsicReaderLayerImpl(inputStream, messageDigest, container);
     }
 
+    @Override
     public String next() throws IOException {
         String filename = asicReaderLayer.next();
 
+        // End of file?
         if (filename == null) {
             properties.get(Asic.SIGNATURE_VERIFIER)
                     .postHandler(container, fileCache, properties);
 
             // TODO Verify all files in container.
-        } else {
-            // TODO Encrypted content?
 
-            Optional<Supporting> supporting = handlers.stream()
-                    .filter(h -> h.supports(filename))
-                    .findFirst();
+            finished = true;
 
-            if (supporting.isPresent()) {
-                supporting.get().handle(asicReaderLayer, filename, container, fileCache, properties);
-                return next();
-            }
+            return null;
         }
 
-        return filename;
+        // Detect metadata file
+        Optional<Supporting> supporting = handlers.stream()
+                .filter(h -> h.supports(filename))
+                .findFirst();
+
+        if (supporting.isPresent()) {
+            supporting.get().handle(asicReaderLayer, filename, container, fileCache, properties);
+            return next();
+        }
+
+        // Detect encrypted file.
+        currentFilter = decryptionFilters.stream()
+                .filter(f -> f.isEncrypted(filename))
+                .findAny()
+                .orElse(DecryptionFilter.NOOP);
+
+        return currentFilter.parseFilename(filename);
     }
 
+    @Override
     public InputStream getContent() throws IOException {
-        return asicReaderLayer.getContent();
+        if (finished)
+            throw new AsicException("No more to read at the end of container.");
+
+        return currentFilter.createFilter(asicReaderLayer.getContent(), properties);
+    }
+
+    @Override
+    public Container getContainer() throws IOException {
+        if (!finished)
+            throw new AsicException("Reading of file must come to an end before fetching the Container object.");
+
+        return container;
     }
 
     @Override

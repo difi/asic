@@ -8,7 +8,6 @@ import no.difi.commons.asic.builder.Properties;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UncheckedIOException;
 
 /**
  * @author erlend
@@ -22,18 +21,9 @@ class AsicReaderFactoryImpl implements AsicReaderFactory {
     }
 
     @Override
-    public Builder<AsicReader> openContainer(InputStream inputStream) throws IOException {
-        try {
-            return Builder.of(properties, properties -> {
-                try {
-                    return new AsicReaderImpl(properties, inputStream);
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            });
-        } catch (UncheckedIOException e) {
-            throw e.getCause();
-        }
+    public Builder<AsicReader, IOException> openContainer(InputStream inputStream) {
+        return Builder.<AsicReader, IOException>of(p -> new AsicReaderImpl(properties, inputStream))
+                .set(properties);
     }
 
     @Override

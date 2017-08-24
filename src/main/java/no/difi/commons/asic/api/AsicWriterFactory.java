@@ -20,7 +20,7 @@ public interface AsicWriterFactory {
      * @param filename  the name of the archive.
      * @return an instance of AsicWriterImpl
      */
-    default Builder<AsicWriter> newContainer(File outputDir, String filename) throws IOException {
+    default Builder<AsicWriter, IOException> newContainer(File outputDir, String filename) throws IOException {
         return newContainer(new File(outputDir, filename));
     }
 
@@ -30,14 +30,14 @@ public interface AsicWriterFactory {
      * @param file the file reference to the archive.
      * @return an instance of AsicWriterImpl
      */
-    default Builder<AsicWriter> newContainer(File file) throws IOException {
+    default Builder<AsicWriter, IOException> newContainer(File file) throws IOException {
         return newContainer(file.toPath());
     }
 
     /**
      * @see #newContainer(File)
      */
-    Builder<AsicWriter> newContainer(Path path) throws IOException;
+    Builder<AsicWriter, IOException> newContainer(Path path) throws IOException;
 
     /**
      * Creates a new AsicWriterImpl, which will createFilter the container contents to the supplied output stream.
@@ -45,5 +45,5 @@ public interface AsicWriterFactory {
      * @param outputStream stream into which the archive will be written.
      * @return an instance of AsicWriterImpl
      */
-    Builder<AsicWriter> newContainer(OutputStream outputStream) throws IOException;
+    Builder<AsicWriter, IOException> newContainer(OutputStream outputStream);
 }
