@@ -1,4 +1,4 @@
-package no.difi.commons.asic.util;
+package no.difi.commons.asic.security;
 
 import no.difi.commons.asic.api.MessageDigestAlgorithm;
 import no.difi.commons.asic.lang.AsicException;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author erlend
  */
-public class BCUtil {
+public class BCHelper {
 
     public static final Provider PROVIDER;
 

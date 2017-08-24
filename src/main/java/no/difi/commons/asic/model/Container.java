@@ -15,11 +15,11 @@ public class Container implements Serializable {
 
     private static final long serialVersionUID = -5478541041467973689L;
 
-    private Mode mode;
+    private final Mode mode;
 
-    private Map<String, DataObject> dataObjects = new HashMap<>();
+    private final Map<String, DataObject> dataObjects = new HashMap<>();
 
-    private List<Signer> signers = new ArrayList<>();
+    private final List<Signer> signers = new ArrayList<>();
 
     private String rootFile;
 
@@ -56,7 +56,7 @@ public class Container implements Serializable {
 
     public void verify(Signer signer, String filename, MessageDigestAlgorithm algorithm, byte[] digest)
             throws AsicException {
-        if (mode != Mode.READER)
+        if (mode == Mode.WRITER)
             throw new IllegalStateException("Verification of content is performed when reading a container.");
 
         if (!dataObjects.get(filename).verify(signer, algorithm, digest))
@@ -81,6 +81,12 @@ public class Container implements Serializable {
 
     public void finish() throws AsicException {
 
+    }
+
+    public Manifest toManifest() {
+        return new Manifest(rootFile,
+                Collections.unmodifiableCollection(dataObjects.values()),
+                Collections.unmodifiableList(signers));
     }
 
     public enum Mode {

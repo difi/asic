@@ -3,7 +3,6 @@ package no.difi.commons.asic.security;
 import no.difi.commons.asic.api.MessageDigestAlgorithm;
 import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.Hash;
-import no.difi.commons.asic.util.BCUtil;
 
 import java.security.MessageDigest;
 import java.util.List;
@@ -18,7 +17,7 @@ public class MultiMessageDigest {
     private final Map<MessageDigestAlgorithm, MessageDigest> messageDigestMap;
 
     public MultiMessageDigest(MessageDigestAlgorithm... messageDigestAlgorithms) throws AsicException {
-        this.messageDigestMap = BCUtil.createMessageDigests(messageDigestAlgorithms);
+        this.messageDigestMap = BCHelper.createMessageDigests(messageDigestAlgorithms);
     }
 
     public MultiMessageDigest(List<MessageDigestAlgorithm> messageDigestAlgorithms) throws AsicException {

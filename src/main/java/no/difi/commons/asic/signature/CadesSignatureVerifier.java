@@ -13,7 +13,7 @@ import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
 import no.difi.commons.asic.model.FileCache;
 import no.difi.commons.asic.model.MimeType;
-import no.difi.commons.asic.util.BCUtil;
+import no.difi.commons.asic.security.BCHelper;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -45,10 +45,10 @@ public class CadesSignatureVerifier extends CadesCommons implements SignatureVer
             Pattern.compile("META-INF/signature(.*)\\.p7s", Pattern.CASE_INSENSITIVE);
 
     private static final JcaSimpleSignerInfoVerifierBuilder SIGNER_INFO_VERIFIER_BUILDER =
-            new JcaSimpleSignerInfoVerifierBuilder().setProvider(BCUtil.PROVIDER);
+            new JcaSimpleSignerInfoVerifierBuilder().setProvider(BCHelper.PROVIDER);
 
     private static final JcaX509CertificateConverter CERTIFICATE_CONVERTER =
-            new JcaX509CertificateConverter().setProvider(BCUtil.PROVIDER);
+            new JcaX509CertificateConverter().setProvider(BCHelper.PROVIDER);
 
 
     @Override

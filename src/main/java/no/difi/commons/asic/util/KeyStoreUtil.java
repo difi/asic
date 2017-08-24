@@ -11,10 +11,10 @@ import java.security.cert.X509Certificate;
 /**
  * @author erlend
  */
-public class KeyStoreUtil {
+public interface KeyStoreUtil {
 
-    public static KeyStore.PrivateKeyEntry load(InputStream keyStoreStream, String keyStorePassword,
-                                                String keyAlias, String keyPassword) throws AsicException {
+    static KeyStore.PrivateKeyEntry load(InputStream keyStoreStream, String keyStorePassword,
+                                         String keyAlias, String keyPassword) throws AsicException {
         try {
             KeyStore keyStore = KeyStore.getInstance("JKS");
             keyStore.load(keyStoreStream, keyStorePassword.toCharArray());

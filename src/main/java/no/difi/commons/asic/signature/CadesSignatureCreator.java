@@ -14,7 +14,7 @@ import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
 import no.difi.commons.asic.model.MimeType;
-import no.difi.commons.asic.util.BCUtil;
+import no.difi.commons.asic.security.BCHelper;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.*;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
@@ -45,7 +45,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
     public static final SignatureCreator INSTANCE = new CadesSignatureCreator();
 
     private static final JcaDigestCalculatorProviderBuilder DIGEST_CALCULATOR_PROVIDER_BUILDER =
-            new JcaDigestCalculatorProviderBuilder().setProvider(BCUtil.PROVIDER);
+            new JcaDigestCalculatorProviderBuilder().setProvider(BCHelper.PROVIDER);
 
     private static final String MANIFEST_FILENAME = "META-INF/ASiCManifest-%s.xml";
 
@@ -65,7 +65,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
 
                 JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(
                         String.format("%swith%s", properties.get(Asic.SIGNATURE_ALGORITHM).get(0).getString(),
-                                keyEntry.getPrivateKey().getAlgorithm())).setProvider(BCUtil.PROVIDER);
+                                keyEntry.getPrivateKey().getAlgorithm())).setProvider(BCHelper.PROVIDER);
 
                 DigestCalculatorProvider digestCalculatorProvider = DIGEST_CALCULATOR_PROVIDER_BUILDER.build();
                 ContentSigner contentSigner = jcaContentSignerBuilder.build(keyEntry.getPrivateKey());

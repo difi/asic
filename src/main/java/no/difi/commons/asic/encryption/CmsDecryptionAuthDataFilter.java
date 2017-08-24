@@ -4,7 +4,7 @@ import no.difi.commons.asic.Asic;
 import no.difi.commons.asic.api.DecryptionFilter;
 import no.difi.commons.asic.builder.Properties;
 import no.difi.commons.asic.lang.AsicException;
-import no.difi.commons.asic.util.BCUtil;
+import no.difi.commons.asic.security.BCHelper;
 import org.bouncycastle.cms.CMSAuthenticatedDataParser;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.KeyTransRecipientId;
@@ -71,7 +71,7 @@ public class CmsDecryptionAuthDataFilter extends CmsDecryptionAbstractFilter {
 
             // Return decrypted stream.
             return recipient.getContentStream(new JceKeyTransAuthenticatedRecipient(privateKey)
-                    .setProvider(BCUtil.PROVIDER))
+                    .setProvider(BCHelper.PROVIDER))
                     .getContentStream();
         } catch (CMSException e) {
             throw new AsicException(e.getMessage(), e);

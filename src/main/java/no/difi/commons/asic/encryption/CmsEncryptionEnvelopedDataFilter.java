@@ -4,7 +4,7 @@ import no.difi.commons.asic.Asic;
 import no.difi.commons.asic.api.EncryptionFilter;
 import no.difi.commons.asic.builder.Properties;
 import no.difi.commons.asic.lang.AsicException;
-import no.difi.commons.asic.util.BCUtil;
+import no.difi.commons.asic.security.BCHelper;
 import org.bouncycastle.cms.CMSEnvelopedDataStreamGenerator;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
@@ -42,12 +42,12 @@ public class CmsEncryptionEnvelopedDataFilter extends CmsEncryptionAbstractFilte
             // Add recipients
             for (X509Certificate certificate : properties.get(Asic.ENCRYPTION_CERTIFICATES))
                 streamGenerator.addRecipientInfoGenerator(
-                        new JceKeyTransRecipientInfoGenerator(certificate).setProvider(BCUtil.PROVIDER));
+                        new JceKeyTransRecipientInfoGenerator(certificate).setProvider(BCHelper.PROVIDER));
 
             // Create encryptor
             OutputEncryptor outputEncryptor =
                     new JceCMSContentEncryptorBuilder(properties.get(Asic.ENCRYPTION_ALGORITHM).getOid())
-                            .setProvider(BCUtil.PROVIDER)
+                            .setProvider(BCHelper.PROVIDER)
                             .build();
 
             // Return OutputStream for use

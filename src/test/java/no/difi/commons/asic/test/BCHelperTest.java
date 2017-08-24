@@ -1,20 +1,21 @@
-package no.difi.commons.asic.util;
+package no.difi.commons.asic.test;
 
 import no.difi.commons.asic.lang.AsicException;
+import no.difi.commons.asic.security.BCHelper;
 import org.testng.annotations.Test;
 
 /**
  * @author erlend
  */
-public class BCUtilTest {
+public class BCHelperTest {
 
     @Test
     public void constructorTest() {
-        new BCUtil();
+        new BCHelper();
     }
 
     @Test(expectedExceptions = AsicException.class)
     public void triggerUnknownAlgorithm() throws AsicException {
-        BCUtil.createMessageDigest("UNKNOWN");
+        BCHelper.createMessageDigest("UNKNOWN");
     }
 }

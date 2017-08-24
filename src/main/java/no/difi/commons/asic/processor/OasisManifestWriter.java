@@ -37,7 +37,7 @@ public class OasisManifestWriter extends OasisManifestCommons implements WriterP
         try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.METADATA, FILENAME, MimeType.APPLICATION_XML)) {
             Marshaller marshaller = JAXB_CONTEXT.createMarshaller();
             marshaller.marshal(manifest, outputStream);
-        } catch (JAXBException e) {
+        } catch (JAXBException | NullPointerException e) {
             throw new AsicException("Unable to create XML for Oasis Manifest.", e);
         }
     }

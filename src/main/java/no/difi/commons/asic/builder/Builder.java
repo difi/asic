@@ -18,10 +18,6 @@ public class Builder<T, E extends Exception> {
         return new Builder<>(buildHandler, new HashMap<>());
     }
 
-    public static <T, E extends Exception> Builder<T, E> of(Properties properties, BuildHandler<T, E> buildHandler) {
-        return new Builder<>(buildHandler, properties.map);
-    }
-
     public static Builder<Properties, RuntimeException> raw() {
         return new Builder<>(p -> p, new HashMap<>());
     }
