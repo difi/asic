@@ -3,8 +3,8 @@ package no.difi.commons.asic.processor;
 import no.difi.commons.asic.api.WriterProcessor;
 import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
+import no.difi.commons.asic.model.MimeType;
 import no.difi.commons.asic.test.TestWriterLayer;
-import no.difi.commons.asic.util.MimeTypes;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -24,8 +24,8 @@ public class OasisManifestWriterTest {
         TestWriterLayer writerLayer = new TestWriterLayer();
 
         Container container = new Container(Container.Mode.WRITER);
-        container.update("file_1.xml", DataObject.Type.DATA, MimeTypes.XML);
-        container.update("file_2.xml", DataObject.Type.DATA, MimeTypes.XML);
+        container.update("file_1.xml", DataObject.Type.DATA, MimeType.APPLICATION_XML);
+        container.update("file_2.xml", DataObject.Type.DATA, MimeType.APPLICATION_XML);
 
         writerProcessor.perform(writerLayer, container, null);
 

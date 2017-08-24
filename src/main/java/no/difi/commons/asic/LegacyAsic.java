@@ -2,8 +2,8 @@ package no.difi.commons.asic;
 
 import no.difi.commons.asic.api.AsicReaderFactory;
 import no.difi.commons.asic.api.AsicWriterFactory;
+import no.difi.commons.asic.api.MessageDigestAlgorithm;
 import no.difi.commons.asic.builder.Builder;
-import no.difi.commons.asic.code.MessageDigestAlgorithms;
 import no.difi.commons.asic.encryption.CmsEncryptionEnvelopedDataFilter;
 
 /**
@@ -20,8 +20,8 @@ public interface LegacyAsic {
     static Builder<AsicReaderFactory, RuntimeException> readerFactoryBuilder() {
         return Asic.readerFactoryBuilder()
                 .set(Asic.SIGNATURE_ALGORITHM,
-                        MessageDigestAlgorithms.SHA1,
-                        MessageDigestAlgorithms.SHA256);
+                        MessageDigestAlgorithm.SHA1,
+                        MessageDigestAlgorithm.SHA256);
     }
 
     /**
@@ -34,6 +34,6 @@ public interface LegacyAsic {
                 .set(Asic.ENCRYPTION_FILTER,
                         CmsEncryptionEnvelopedDataFilter.INSTANCE)
                 .set(Asic.SIGNATURE_ALGORITHM,
-                        MessageDigestAlgorithms.SHA1);
+                        MessageDigestAlgorithm.SHA1);
     }
 }

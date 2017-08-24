@@ -14,7 +14,7 @@ import java.io.InputStream;
  */
 class AsicReaderFactoryImpl implements AsicReaderFactory {
 
-    private Properties properties;
+    private final Properties properties;
 
     protected AsicReaderFactoryImpl(Properties properties) {
         this.properties = properties;

@@ -14,7 +14,6 @@ import no.difi.commons.asic.model.DataObject;
 import no.difi.commons.asic.model.FileCache;
 import no.difi.commons.asic.model.MimeType;
 import no.difi.commons.asic.util.BCUtil;
-import no.difi.commons.asic.util.MimeTypes;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -37,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class CadesSignatureVerifier extends CadesCommons implements SignatureVerifier {
 
-    public static SignatureVerifier INSTANCE = new CadesSignatureVerifier();
+    public static final SignatureVerifier INSTANCE = new CadesSignatureVerifier();
 
     protected static final Pattern PATTERN_MANIFEST =
             Pattern.compile("META-INF/asicmanifest(.*)\\.xml", Pattern.CASE_INSENSITIVE);
@@ -61,10 +60,10 @@ public class CadesSignatureVerifier extends CadesCommons implements SignatureVer
     public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container,
                        FileCache fileCache, Properties properties) throws IOException {
         if (PATTERN_MANIFEST.matcher(filename).matches()) {
-            container.update(filename, DataObject.Type.MANIFEST, MimeTypes.XML);
+            container.update(filename, DataObject.Type.MANIFEST, MimeType.APPLICATION_XML);
             fileCache.put(filename, ByteStreams.toByteArray(asicReaderLayer.getContent()));
         } else {
-            container.update(filename, DataObject.Type.DETACHED_SIGNATURE, MimeType.forString(SIGNATURE_MIME_TYPE));
+            container.update(filename, DataObject.Type.DETACHED_SIGNATURE, MimeType.of(SIGNATURE_MIME_TYPE));
             fileCache.put(filename, ByteStreams.toByteArray(asicReaderLayer.getContent()));
         }
     }
@@ -92,7 +91,7 @@ public class CadesSignatureVerifier extends CadesCommons implements SignatureVer
         // Verify data objects.
         for (DataObjectReferenceType reference : aSiCManifest.getDataObjectReference()) {
             container.update(reference.getURI(), DataObject.Type.DATA,
-                    MimeType.forString(reference.getMimeType()));
+                    MimeType.of(reference.getMimeType()));
 
             container.verify(null, reference.getURI(),
                     MessageDigestAlgorithm.findByUri(

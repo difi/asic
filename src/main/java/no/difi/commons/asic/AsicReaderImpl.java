@@ -21,17 +21,17 @@ import java.util.Optional;
  */
 class AsicReaderImpl implements AsicReader {
 
-    private Properties properties;
+    private final Properties properties;
 
-    private AsicReaderLayer asicReaderLayer;
+    private final AsicReaderLayer asicReaderLayer;
 
-    private Container container = new Container(Container.Mode.READER);
+    private final Container container = new Container(Container.Mode.READER);
 
-    private List<Supporting> handlers = new ArrayList<>();
+    private final List<Supporting> handlers = new ArrayList<>();
 
-    private List<DecryptionFilter> decryptionFilters;
+    private final List<DecryptionFilter> decryptionFilters;
 
-    private FileCache fileCache = new FileCache();
+    private final FileCache fileCache = FileCache.create();
 
     private boolean finished = false;
 

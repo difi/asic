@@ -6,7 +6,6 @@ import no.difi.commons.asic.api.AsicWriterFactory;
 import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.MimeType;
 import no.difi.commons.asic.util.KeyStoreUtil;
-import no.difi.commons.asic.util.MimeTypes;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -45,11 +44,11 @@ public class AsicWriterTest {
              AsicWriter asicWriter = asicWriterFactory.newContainer(outputStream).build()) {
 
             try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
-                asicWriter.add(inputStream, "bii-envelope.xml", MimeTypes.XML);
+                asicWriter.add(inputStream, "bii-envelope.xml", MimeType.APPLICATION_XML);
             }
 
             try (InputStream inputStream = getClass().getResourceAsStream("/bii-trns081.xml")) {
-                asicWriter.add(inputStream, "bii-trns081.xml", MimeTypes.XML);
+                asicWriter.add(inputStream, "bii-trns081.xml", MimeType.APPLICATION_XML);
             }
 
             asicWriter.setRootFile("bii-envelope.xml");
@@ -68,7 +67,7 @@ public class AsicWriterTest {
         AsicWriter asicWriter = asicWriterFactory.newContainer(ByteStreams.nullOutputStream()).build();
 
         try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
-            asicWriter.add(inputStream, "META-INF/bii-envelope.xml", MimeTypes.XML);
+            asicWriter.add(inputStream, "META-INF/bii-envelope.xml", MimeType.APPLICATION_XML);
         }
 
         asicWriter.sign();
@@ -86,7 +85,7 @@ public class AsicWriterTest {
 
         // This is expected to trigger exception.
         try (InputStream inputStream = getClass().getResourceAsStream("/bii-envelope.xml")) {
-            asicWriter.add(inputStream, "bii-envelope.xml", MimeTypes.XML);
+            asicWriter.add(inputStream, "bii-envelope.xml", MimeType.APPLICATION_XML);
         }
     }
 
@@ -97,12 +96,12 @@ public class AsicWriterTest {
                 .build()) {
 
             try (InputStream inputStream = getClass().getResourceAsStream("/image.bmp");
-                 OutputStream outputStream = asicWriter.add("image1.bmp", MimeType.forString("image/bmp"))) {
+                 OutputStream outputStream = asicWriter.add("image1.bmp", MimeType.of("image/bmp"))) {
                 ByteStreams.copy(inputStream, outputStream);
             }
 
             try (InputStream inputStream = getClass().getResourceAsStream("/image.bmp");
-                 OutputStream outputStream = asicWriter.encryptNext().add("image2.bmp", MimeType.forString("image/bmp"))) {
+                 OutputStream outputStream = asicWriter.encryptNext().add("image2.bmp", MimeType.of("image/bmp"))) {
                 ByteStreams.copy(inputStream, outputStream);
             }
 

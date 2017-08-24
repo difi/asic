@@ -14,7 +14,7 @@ import no.difi.commons.asic.lang.AsicException;
 import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
 import no.difi.commons.asic.model.FileCache;
-import no.difi.commons.asic.util.MimeTypes;
+import no.difi.commons.asic.model.MimeType;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -112,7 +112,7 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
 
             for (ReferenceType reference : signedInfoType.getReference()) {
                 if (!reference.getURI().startsWith("#")) {
-                    container.update(reference.getURI(), DataObject.Type.DATA, MimeTypes.XML);
+                    container.update(reference.getURI(), DataObject.Type.DATA, MimeType.APPLICATION_XML);
 
                     /*
                     container.verify(null, reference.getURI(),

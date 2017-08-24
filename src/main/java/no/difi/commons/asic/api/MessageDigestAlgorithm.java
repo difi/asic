@@ -7,6 +7,28 @@ import java.util.List;
  */
 public interface MessageDigestAlgorithm {
 
+    MessageDigestAlgorithm SHA1 = of("SHA1",
+            "http://www.w3.org/2000/09/xmldsig#sha1",
+            "http://www.w3.org/2001/04/xmlenc#sha1");
+
+    MessageDigestAlgorithm SHA224 = of("SHA224",
+            "http://www.w3.org/2001/04/xmldsig-more#sha224");
+
+    MessageDigestAlgorithm SHA256 = of("SHA256",
+            "http://www.w3.org/2001/04/xmlenc#sha256",
+            "http://www.w3.org/2000/09/xmldsig#sha256",
+            "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
+
+    MessageDigestAlgorithm SHA384 = of("SHA384",
+            "http://www.w3.org/2001/04/xmldsig-more#sha384");
+
+    MessageDigestAlgorithm SHA512 = of("SHA512",
+            "http://www.w3.org/2001/04/xmlenc#sha512",
+            "http://www.w3.org/2000/09/xmldsig#sha512");
+
+    MessageDigestAlgorithm RIPEMD160 = of("RIPEMD160",
+            "http://www.w3.org/2001/04/xmlenc#ripemd160");
+
     String getString();
 
     String getURI();

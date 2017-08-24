@@ -6,7 +6,7 @@ import no.difi.commons.asic.builder.Properties;
 import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
 import no.difi.commons.asic.model.FileCache;
-import no.difi.commons.asic.util.MimeTypes;
+import no.difi.commons.asic.model.MimeType;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ public class OasisManifestReader extends OasisManifestCommons implements ReaderP
     @Override
     public void handle(AsicReaderLayer asicReaderLayer, String filename, Container container,
                        FileCache fileCache, Properties properties) throws IOException {
-        container.update(filename, DataObject.Type.METADATA, MimeTypes.XML);
+        container.update(filename, DataObject.Type.METADATA, MimeType.APPLICATION_XML);
 
         // No reason to use further resources on verification of content.
     }

@@ -15,11 +15,11 @@ import java.io.InputStream;
  */
 class AsicReaderLayerImpl implements AsicReaderLayer {
 
-    private AsicInputStream asicInputStream;
+    private final AsicInputStream asicInputStream;
 
-    private MultiMessageDigest messageDigest;
+    private final MultiMessageDigest messageDigest;
 
-    private Container container;
+    private final Container container;
 
     public InputStream current = null;
 

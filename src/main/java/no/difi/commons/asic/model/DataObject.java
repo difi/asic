@@ -52,10 +52,6 @@ public class DataObject implements Serializable {
         return hash;
     }
 
-    public void addSigner(Signer signer) {
-        signers.add(signer);
-    }
-
     boolean verify(Signer signer, MessageDigestAlgorithm algorithm, byte[] digest) {
         if (hash.verify(algorithm, digest)) {
             signers.add(signer);
@@ -67,6 +63,10 @@ public class DataObject implements Serializable {
 
     public List<Signer> getSigners() {
         return Collections.unmodifiableList(signers);
+    }
+
+    public boolean isValid() {
+        return signers.size() > 0;
     }
 
     @Override

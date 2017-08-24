@@ -1,8 +1,6 @@
 package no.difi.commons.asic.api;
 
 import no.difi.commons.asic.builder.Property;
-import no.difi.commons.asic.code.EncryptionAlgorithms;
-import no.difi.commons.asic.code.MessageDigestAlgorithms;
 import no.difi.commons.asic.encryption.CmsDecryptionDetectorFilter;
 import no.difi.commons.asic.encryption.CmsEncryptionDetectorFilter;
 import no.difi.commons.asic.processor.OasisManifestReader;
@@ -25,7 +23,7 @@ public interface AsicConfig {
             Property.create();
 
     Property<List<EncryptionAlgorithm>> DECRYPTION_ALGORITHM =
-            Property.createList(EncryptionAlgorithms.AES256_GCM, EncryptionAlgorithms.AES256_CBC);
+            Property.createList(EncryptionAlgorithm.AES256_GCM, EncryptionAlgorithm.AES256_CBC);
 
     Property<List<DecryptionFilter>> DECRYPTION_FILTER =
             Property.createList(CmsDecryptionDetectorFilter.INSTANCE);
@@ -36,7 +34,7 @@ public interface AsicConfig {
     // ENCRYPTION
 
     Property<EncryptionAlgorithm> ENCRYPTION_ALGORITHM =
-            Property.create(EncryptionAlgorithms.AES256_GCM);
+            Property.create(EncryptionAlgorithm.AES256_GCM);
 
     Property<List<X509Certificate>> ENCRYPTION_CERTIFICATES =
             Property.create();
@@ -47,10 +45,10 @@ public interface AsicConfig {
     // SIGNATURE
 
     Property<List<MessageDigestAlgorithm>> SIGNATURE_OBJECT_ALGORITHM =
-            Property.createList(MessageDigestAlgorithms.SHA256);
+            Property.createList(MessageDigestAlgorithm.SHA256);
 
     Property<List<MessageDigestAlgorithm>> SIGNATURE_ALGORITHM =
-            Property.createList(MessageDigestAlgorithms.SHA256);
+            Property.createList(MessageDigestAlgorithm.SHA256);
 
     Property<SignatureCreator> SIGNATURE_CREATOR =
             Property.create(CadesSignatureCreator.INSTANCE);

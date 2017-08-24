@@ -42,24 +42,13 @@ public class Container implements Serializable {
     }
 
     public void update(String filename, DataObject.Type type, MimeType mimeType) {
-        DataObject dataObject = dataObjects.get(filename);
-
-        if (dataObject == null) {
-            dataObject = new DataObject(filename);
-            dataObjects.put(filename, dataObject);
-        }
-
+        DataObject dataObject = getDataObject(filename);
         dataObject.setType(type);
         dataObject.setMimeType(mimeType);
     }
 
     public void update(String filename, MultiMessageDigest messageDigest) throws AsicException {
-        DataObject dataObject = dataObjects.get(filename);
-
-        if (dataObject == null) {
-            dataObject = new DataObject(filename);
-            dataObjects.put(filename, dataObject);
-        }
+        DataObject dataObject = getDataObject(filename);
 
         if (!dataObject.getHash().update(messageDigest))
             throw new ChecksumException(String.format("Invalid checksum for '%s'.", filename));
@@ -79,6 +68,19 @@ public class Container implements Serializable {
 
     public Collection<DataObject> getDataObjects() {
         return Collections.unmodifiableCollection(dataObjects.values());
+    }
+
+    private DataObject getDataObject(String filename) {
+        if (dataObjects.containsKey(filename))
+            return dataObjects.get(filename);
+
+        DataObject dataObject = new DataObject(filename);
+        dataObjects.put(filename, dataObject);
+        return dataObject;
+    }
+
+    public void finish() throws AsicException {
+
     }
 
     public enum Mode {

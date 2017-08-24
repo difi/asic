@@ -16,11 +16,11 @@ import java.io.OutputStream;
  */
 class AsicWriterLayerImpl implements AsicWriterLayer {
 
-    private AsicOutputStream asicOutputStream;
+    private final AsicOutputStream asicOutputStream;
 
-    private MultiMessageDigest messageDigest;
+    private final MultiMessageDigest messageDigest;
 
-    private Container container;
+    private final Container container;
 
     public AsicWriterLayerImpl(OutputStream outputStream, MultiMessageDigest messageDigest, Container container)
             throws IOException {

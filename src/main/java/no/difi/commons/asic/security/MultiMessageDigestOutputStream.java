@@ -12,7 +12,7 @@ import java.io.OutputStream;
  */
 public class MultiMessageDigestOutputStream extends FilterOutputStream {
 
-    private MultiMessageDigest multiMessageDigest;
+    private final MultiMessageDigest multiMessageDigest;
 
     public MultiMessageDigestOutputStream(OutputStream out, MultiMessageDigest multiMessageDigest) {
         super(out);

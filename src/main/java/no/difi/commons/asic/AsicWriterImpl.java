@@ -10,7 +10,7 @@ import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
 import no.difi.commons.asic.model.MimeType;
 import no.difi.commons.asic.security.MultiMessageDigest;
-import no.difi.commons.asic.util.MimeTypes;
+import no.difi.commons.asic.util.MimeTypeUtil;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,17 +21,17 @@ import java.io.UncheckedIOException;
  */
 class AsicWriterImpl implements AsicWriter {
 
-    private OutputStream outputStream;
+    private final Properties properties;
 
-    private AsicWriterLayer asicWriterLayer;
+    private final OutputStream outputStream;
 
-    private boolean closeStreamOnClose;
+    private final AsicWriterLayer asicWriterLayer;
+
+    private final boolean closeStreamOnClose;
+
+    private final Container container = new Container(Container.Mode.WRITER);
 
     private boolean signed = false;
-
-    private Container container = new Container(Container.Mode.WRITER);
-
-    private Properties properties;
 
     private boolean encrypt = false;
 
@@ -64,12 +64,12 @@ class AsicWriterImpl implements AsicWriter {
             return encryptionFilter.createFilter(asicWriterLayer.addContent(
                     DataObject.Type.DATA,
                     encryptionFilter.filename(filename),
-                    mimeType != null ? mimeType : MimeTypes.detect(filename)), properties);
+                    mimeType != null ? mimeType : MimeTypeUtil.detect(filename)), properties);
         } else {
             return asicWriterLayer.addContent(
                     DataObject.Type.DATA,
                     filename,
-                    mimeType != null ? mimeType : MimeTypes.detect(filename));
+                    mimeType != null ? mimeType : MimeTypeUtil.detect(filename));
         }
     }
 

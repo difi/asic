@@ -2,6 +2,7 @@ package no.difi.commons.asic;
 
 import com.google.common.io.ByteStreams;
 import no.difi.commons.asic.lang.AsicException;
+import no.difi.commons.asic.model.MimeType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,7 +39,7 @@ class AsicInputStream extends InputStream {
         ByteStreams.copy(zipInputStream, byteArrayOutputStream);
         closeEntry();
 
-        if (!byteArrayOutputStream.toString().equals(Asic.MIMETYPE_ASICE))
+        if (!byteArrayOutputStream.toString().equals(MimeType.APPLICATION_ASICE.getValue()))
             throw new AsicException(String.format("Detected invalid mimetype '%s'.", byteArrayOutputStream.toString()));
 
         // Return next.

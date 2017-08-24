@@ -15,7 +15,7 @@ import java.nio.file.Path;
  */
 class AsicWriterFactoryImpl implements AsicWriterFactory {
 
-    protected Properties properties;
+    protected final Properties properties;
 
     protected AsicWriterFactoryImpl(Properties properties) {
         this.properties = properties;

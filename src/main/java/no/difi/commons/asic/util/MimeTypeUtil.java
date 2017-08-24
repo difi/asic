@@ -12,11 +12,7 @@ import java.nio.file.Paths;
 /**
  * @author erlend
  */
-public class MimeTypes {
-
-    public static final MimeType ASICE = MimeType.forString("application/vnd.etsi.asic-e+zip");
-
-    public static final MimeType XML = MimeType.forString("application/xml");
+public class MimeTypeUtil {
 
     private static FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
@@ -24,9 +20,9 @@ public class MimeTypes {
         String filenameLower = filename.toLowerCase();
 
         if (filenameLower.endsWith(".xml"))
-            return XML;
+            return MimeType.APPLICATION_XML;
         else if (filenameLower.endsWith(".asice"))
-            return ASICE;
+            return MimeType.APPLICATION_ASICE;
 
         try {
             // Use Files to find content type
@@ -40,7 +36,7 @@ public class MimeTypes {
             if (mimeType == null)
                 throw new MimeTypeException(String.format("Unable to determine MIME type of %s", filename));
 
-            return MimeType.forString(mimeType);
+            return MimeType.of(mimeType);
         } catch (IOException e) {
             throw new MimeTypeException(e.getMessage(), e);
         }

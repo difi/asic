@@ -1,6 +1,7 @@
 package no.difi.commons.asic;
 
 import com.google.common.io.ByteStreams;
+import no.difi.commons.asic.model.MimeType;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -15,18 +16,18 @@ import java.util.zip.ZipOutputStream;
  */
 class AsicOutputStream extends OutputStream {
 
-    private ZipOutputStream zipOutputStream;
+    private final ZipOutputStream zipOutputStream;
 
     public AsicOutputStream(OutputStream outputStream) throws IOException {
         // Initiate ZIP stream
         zipOutputStream = new ZipOutputStream(outputStream);
 
         // Write comment
-        zipOutputStream.setComment("mimetype=" + Asic.MIMETYPE_ASICE);
+        zipOutputStream.setComment("mimetype=" + MimeType.APPLICATION_ASICE.getValue());
 
         // Write "mimetype" file
         zipOutputStream.putNextEntry(new ZipEntry("mimetype"));
-        ByteStreams.copy(new ByteArrayInputStream(Asic.MIMETYPE_ASICE.getBytes()), zipOutputStream);
+        ByteStreams.copy(new ByteArrayInputStream(MimeType.APPLICATION_ASICE.getValue().getBytes()), zipOutputStream);
         zipOutputStream.closeEntry();
     }
 

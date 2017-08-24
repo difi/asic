@@ -8,9 +8,9 @@ import java.io.InputStream;
  */
 public class MultiMessageDigestInputStream extends InputStream {
 
-    private InputStream inputStream;
+    private final InputStream inputStream;
 
-    private MultiMessageDigest multiMessageDigest;
+    private final MultiMessageDigest multiMessageDigest;
 
     public MultiMessageDigestInputStream(InputStream in, MultiMessageDigest messageDigest) {
         this.inputStream = in;

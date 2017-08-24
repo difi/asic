@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class MultiMessageDigest {
 
-    private Map<MessageDigestAlgorithm, MessageDigest> messageDigestMap;
+    private final Map<MessageDigestAlgorithm, MessageDigest> messageDigestMap;
 
     public MultiMessageDigest(MessageDigestAlgorithm... messageDigestAlgorithms) throws AsicException {
         this.messageDigestMap = BCUtil.createMessageDigests(messageDigestAlgorithms);

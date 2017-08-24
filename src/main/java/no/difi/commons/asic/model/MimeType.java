@@ -2,41 +2,55 @@ package no.difi.commons.asic.model;
 
 import java.io.Serializable;
 
-public class MimeType implements Serializable {
+public interface MimeType extends Serializable {
 
-    private static final long serialVersionUID = 5501916549809487201L;
+    /**
+     * The MIME type, which should be the very first entry in the container
+     */
+    MimeType APPLICATION_ASICE = of("application/vnd.etsi.asic-e+zip");
 
-    public static MimeType forString(String mimeType) {
-        return new MimeType(mimeType);
+    MimeType APPLICATION_PDF = of("application/pdf");
+
+    MimeType APPLICATION_XML = of("application/xml");
+
+    String getValue();
+
+    static MimeType of(String mimeType) {
+        return new DefaultMimeType(mimeType);
     }
 
-    private final String value;
+    class DefaultMimeType implements MimeType {
 
-    private MimeType(String mimeType) {
-        this.value = mimeType;
-    }
+        private static final long serialVersionUID = 5501916549809487201L;
 
-    public String getValue() {
-        return value;
-    }
+        private final String value;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        private DefaultMimeType(String mimeType) {
+            this.value = mimeType;
+        }
 
-        MimeType mimeType = (MimeType) o;
+        public String getValue() {
+            return value;
+        }
 
-        return value.equals(mimeType.value);
-    }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || !(o instanceof MimeType)) return false;
 
-    @Override
-    public int hashCode() {
-        return value.hashCode();
-    }
+            MimeType mimeType = (MimeType) o;
 
-    @Override
-    public String toString() {
-        return value;
+            return value.equals(mimeType.getValue());
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 }

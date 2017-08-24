@@ -15,7 +15,6 @@ import no.difi.commons.asic.model.Container;
 import no.difi.commons.asic.model.DataObject;
 import no.difi.commons.asic.model.MimeType;
 import no.difi.commons.asic.util.BCUtil;
-import no.difi.commons.asic.util.MimeTypes;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.*;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
@@ -43,7 +42,7 @@ import java.util.UUID;
  */
 public class CadesSignatureCreator extends CadesCommons implements SignatureCreator {
 
-    public static SignatureCreator INSTANCE = new CadesSignatureCreator();
+    public static final SignatureCreator INSTANCE = new CadesSignatureCreator();
 
     private static final JcaDigestCalculatorProviderBuilder DIGEST_CALCULATOR_PROVIDER_BUILDER =
             new JcaDigestCalculatorProviderBuilder().setProvider(BCUtil.PROVIDER);
@@ -129,7 +128,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
 
         // Write element to baos
         try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.MANIFEST,
-                String.format(MANIFEST_FILENAME, identifier), MimeTypes.XML)) {
+                String.format(MANIFEST_FILENAME, identifier), MimeType.APPLICATION_XML)) {
             Marshaller marshaller = JAXB_CONTEXT.createMarshaller();
             marshaller.marshal(jaxbElement, byteArrayOutputStream);
 
@@ -145,7 +144,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
     private void writeSignature(AsicWriterLayer asicWriterLayer, String identifier, CMSSignedData cmsSignedData)
             throws IOException {
         try (OutputStream outputStream = asicWriterLayer.addContent(DataObject.Type.DETACHED_SIGNATURE,
-                String.format(SIGNATURE_FILENAME, identifier), MimeType.forString(SIGNATURE_MIME_TYPE))) {
+                String.format(SIGNATURE_FILENAME, identifier), MimeType.of(SIGNATURE_MIME_TYPE))) {
             ByteStreams.copy(new ByteArrayInputStream(cmsSignedData.getEncoded()), outputStream);
         }
     }

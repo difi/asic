@@ -7,11 +7,6 @@ import no.difi.commons.asic.builder.Builder;
 
 public interface Asic extends AsicConfig {
 
-    /**
-     * The MIME type, which should be the very first entry in the container
-     */
-    String MIMETYPE_ASICE = "application/vnd.etsi.asic-e+zip";
-
     static Builder<AsicReaderFactory, RuntimeException> readerFactoryBuilder() {
         return Builder.of(AsicReaderFactoryImpl::new);
     }
