@@ -16,8 +16,7 @@ public interface MessageDigestAlgorithm {
 
     MessageDigestAlgorithm SHA256 = of("SHA256",
             "http://www.w3.org/2001/04/xmlenc#sha256",
-            "http://www.w3.org/2000/09/xmldsig#sha256",
-            "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
+            "http://www.w3.org/2000/09/xmldsig#sha256");
 
     MessageDigestAlgorithm SHA384 = of("SHA384",
             "http://www.w3.org/2001/04/xmldsig-more#sha384");

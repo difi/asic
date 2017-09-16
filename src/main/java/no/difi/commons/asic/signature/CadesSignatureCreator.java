@@ -64,8 +64,7 @@ public class CadesSignatureCreator extends CadesCommons implements SignatureCrea
                 String identifier = UUID.randomUUID().toString();
 
                 JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(
-                        String.format("%swith%s", properties.get(Asic.SIGNATURE_ALGORITHM).get(0).getString(),
-                                keyEntry.getPrivateKey().getAlgorithm())).setProvider(BCHelper.PROVIDER);
+                        properties.get(Asic.SIGNATURE_ALGORITHM).get(0).getString()).setProvider(BCHelper.PROVIDER);
 
                 DigestCalculatorProvider digestCalculatorProvider = DIGEST_CALCULATOR_PROVIDER_BUILDER.build();
                 ContentSigner contentSigner = jcaContentSignerBuilder.build(keyEntry.getPrivateKey());

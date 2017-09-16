@@ -3,7 +3,7 @@ package no.difi.commons.asic.signature;
 import com.google.common.io.ByteStreams;
 import no.difi.commons.asic.Asic;
 import no.difi.commons.asic.api.AsicReaderLayer;
-import no.difi.commons.asic.api.MessageDigestAlgorithm;
+import no.difi.commons.asic.api.SignatureMethod;
 import no.difi.commons.asic.api.SignatureVerifier;
 import no.difi.commons.asic.builder.Properties;
 import no.difi.commons.asic.jaxb.cades.XAdESSignaturesType;
@@ -194,7 +194,7 @@ public class XadesSignatureVerifier extends XadesCommons implements SignatureVer
                     final PublicKey key = certificate.getPublicKey();
 
                     // Make sure the algorithm is compatible with the method.
-                    if (MessageDigestAlgorithm.findByUri(method.getAlgorithm(), properties.get(Asic.SIGNATURE_ALGORITHM)) == null)
+                    if (SignatureMethod.findByUri(method.getAlgorithm(), properties.get(Asic.SIGNATURE_ALGORITHM)) == null)
                         throw new KeySelectorException(String.format("Invalid signature algorithm '%s' is used.", method.getAlgorithm()));
 
                     return () -> key;

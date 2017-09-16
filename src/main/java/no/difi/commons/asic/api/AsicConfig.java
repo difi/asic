@@ -47,8 +47,8 @@ public interface AsicConfig {
     Property<List<MessageDigestAlgorithm>> SIGNATURE_OBJECT_ALGORITHM =
             Property.createList(MessageDigestAlgorithm.SHA256);
 
-    Property<List<MessageDigestAlgorithm>> SIGNATURE_ALGORITHM =
-            Property.createList(MessageDigestAlgorithm.SHA256);
+    Property<List<SignatureMethod>> SIGNATURE_ALGORITHM =
+            Property.createList(SignatureMethod.SHA256_RSA);
 
     Property<SignatureCreator> SIGNATURE_CREATOR =
             Property.create(CadesSignatureCreator.INSTANCE);
